@@ -1,6 +1,34 @@
 <!DOCTYPE html>
-<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>BRAWL ZONE</title><link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#1a0a2e;overflow:hidden;font-family:'Nunito',sans-serif;touch-action:none}#mainMenu{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 30%,#3d1a6e 0%,#1a0a2e 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}.logo{font-family:'Fredoka One',cursive;font-size:clamp(48px,10vw,96px);color:#fff;text-shadow:0 0 30px #ff6b35,0 4px 0 #c2410c,0 8px 0 #7c2d12;letter-spacing:4px;animation:lp 2s ease-in-out infinite}@keyframes lp{0%,100%{transform:scale(1) rotate(-1deg)}50%{transform:scale(1.05) rotate(1deg)}}.subtitle{color:#fbbf24;font-size:20px;font-weight:900;letter-spacing:2px;margin-top:-16px}.menuModes{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:700px}.modeCard{background:linear-gradient(135deg,#2d1b69,#1e1040);border:3px solid rgba(255,255,255,.15);border-radius:20px;padding:20px 28px;cursor:pointer;transition:all .2s;text-align:center;min-width:160px}.modeCard:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.4)}.modeIcon{font-size:36px;margin-bottom:8px}.modeName{color:#fff;font-size:16px;font-weight:900}.modeDesc{color:#a78bfa;font-size:12px;margin-top:4px}.startBtn{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;border:none;border-radius:50px;padding:18px 56px;font-size:22px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;box-shadow:0 8px 32px rgba(249,115,22,.5);text-transform:uppercase}.selectedMode{border-color:#f97316!important;box-shadow:0 0 20px rgba(249,115,22,.4)}#gameCanvas{display:block}#hud{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}.hudTop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:12px 16px}.hudBox{background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:8px 16px;backdrop-filter:blur(8px)}.hudTimer{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);border:2px solid #fbbf24;border-radius:50px;padding:6px 20px;color:#fbbf24;font-size:24px;font-weight:900;font-family:'Fredoka One',cursive}.hudScore{color:#fff;font-size:14px;font-weight:900}.hudScore span{color:#fbbf24;font-size:20px}.hudMode{color:#a78bfa;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px}#joystickLeft{position:fixed;bottom:30px;left:30px;pointer-events:all;z-index:20;display:none}.joyOuter{width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08);border:3px solid rgba(255,255,255,.2);position:relative}.joyInner{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.4);border:3px solid rgba(255,255,255,.7);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}#playerHP{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px}.hpBar{width:200px;height:14px;background:rgba(0,0,0,.5);border-radius:20px;border:2px solid rgba(255,255,255,.2);overflow:hidden}.hpFill{height:100%;background:linear-gradient(90deg,#22c55e,#86efac);border-radius:20px;transition:width .2s}.superBar{width:200px;height:8px;background:rgba(0,0,0,.5);border-radius:20px;overflow:hidden}.superFill{height:100%;background:linear-gradient(90deg,#eab308,#fde047);border-radius:20px;transition:width .3s}.crystalCount{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;color:#a855f7;font-size:18px;font-weight:900;background:rgba(0,0,0,.6);padding:6px 16px;border-radius:50px;border:2px solid #a855f7}#gameOver{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;backdrop-filter:blur(8px)}.goTitle{font-family:'Fredoka One',cursive;font-size:clamp(48px,10vw,80px)}.goStats{color:#e2e8f0;font-size:18px;text-align:center;line-height:1.8}.goStats b{color:#fbbf24}.replayBtn{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:50px;padding:16px 48px;font-size:20px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;margin-top:8px}.menuBtn{background:transparent;color:#a78bfa;border:2px solid #a78bfa;border-radius:50px;padding:12px 40px;font-size:16px;font-weight:700;cursor:pointer}#killFeed{position:fixed;top:80px;right:12px;z-index:15;pointer-events:none;display:flex;flex-direction:column;gap:4px;max-width:200px}.killMsg{background:rgba(0,0,0,.7);border-radius:8px;padding:4px 10px;font-size:12px;color:#fff;font-weight:700;border-left:3px solid #f97316}.particle{position:fixed;pointer-events:none;z-index:50;border-radius:50%;animation:pf .6s forwards}@keyframes pf{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}.floatText{position:fixed;pointer-events:none;z-index:60;font-weight:900;font-size:20px;animation:fu 1s forwards}@keyframes fu{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}</style></head><body>
-<div id="mainMenu"><div class="logo">BRAWL ZONE</div><div class="subtitle">⚡ РОССИЙСКИЙ АНАЛОГ ⚡</div><div class="menuModes"><div class="modeCard selectedMode" onclick="selectMode('showdown')" id="mode_showdown"><div class="modeIcon">💀</div><div class="modeName">SHOWDOWN</div><div class="modeDesc">Один против всех</div></div><div class="modeCard" onclick="selectMode('brawl3v3')" id="mode_brawl3v3"><div class="modeIcon">⚔️</div><div class="modeName">3 vs 3</div><div class="modeDesc">Командный бой</div></div><div class="modeCard" onclick="selectMode('crystals')" id="mode_crystals"><div class="modeIcon">💎</div><div class="modeName">КРИСТАЛЛЫ</div><div class="modeDesc">Захват ресурсов</div></div></div><button class="startBtn" onclick="startGame()">🔥 ИГРАТЬ!</button></div>
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>BRAWL ZONE</title><link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#1a0a2e;overflow:hidden;font-family:'Nunito',sans-serif;touch-action:none}#mainMenu{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 30%,#3d1a6e 0%,#1a0a2e 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}.logo{font-family:'Fredoka One',cursive;font-size:clamp(48px,10vw,96px);color:#fff;text-shadow:0 0 30px #ff6b35,0 4px 0 #c2410c,0 8px 0 #7c2d12;letter-spacing:4px;animation:lp 2s ease-in-out infinite}@keyframes lp{0%,100%{transform:scale(1) rotate(-1deg)}50%{transform:scale(1.05) rotate(1deg)}}.subtitle{color:#fbbf24;font-size:20px;font-weight:900;letter-spacing:2px;margin-top:-16px}.menuModes{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:700px}.modeCard{background:linear-gradient(135deg,#2d1b69,#1e1040);border:3px solid rgba(255,255,255,.15);border-radius:20px;padding:20px 28px;cursor:pointer;transition:all .2s;text-align:center;min-width:160px}.modeCard:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.4)}.modeIcon{font-size:36px;margin-bottom:8px}.modeName{color:#fff;font-size:16px;font-weight:900}.modeDesc{color:#a78bfa;font-size:12px;margin-top:4px}.startBtn{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;border:none;border-radius:50px;padding:18px 56px;font-size:22px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;box-shadow:0 8px 32px rgba(249,115,22,.5);text-transform:uppercase}.selectedMode{border-color:#f97316!important;box-shadow:0 0 20px rgba(249,115,22,.4)}#gameCanvas{display:block}#hud{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}.hudTop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:12px 16px}.hudBox{background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:8px 16px;backdrop-filter:blur(8px)}.hudTimer{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);border:2px solid #fbbf24;border-radius:50px;padding:6px 20px;color:#fbbf24;font-size:24px;font-weight:900;font-family:'Fredoka One',cursive}.hudScore{color:#fff;font-size:14px;font-weight:900}.hudScore span{color:#fbbf24;font-size:20px}.hudMode{color:#a78bfa;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px}#joystickLeft{position:fixed;bottom:30px;left:30px;pointer-events:all;z-index:20;display:none}.joyOuter{width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08);border:3px solid rgba(255,255,255,.2);position:relative}.joyInner{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.4);border:3px solid rgba(255,255,255,.7);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}#playerHP{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px}.hpBar{width:200px;height:14px;background:rgba(0,0,0,.5);border-radius:20px;border:2px solid rgba(255,255,255,.2);overflow:hidden}.hpFill{height:100%;background:linear-gradient(90deg,#22c55e,#86efac);border-radius:20px;transition:width .2s}.superBar{width:200px;height:8px;background:rgba(0,0,0,.5);border-radius:20px;overflow:hidden}.superFill{height:100%;background:linear-gradient(90deg,#eab308,#fde047);border-radius:20px;transition:width .3s}.crystalCount{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;color:#a855f7;font-size:18px;font-weight:900;background:rgba(0,0,0,.6);padding:6px 16px;border-radius:50px;border:2px solid #a855f7}#gameOver{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;backdrop-filter:blur(8px)}.goTitle{font-family:'Fredoka One',cursive;font-size:clamp(48px,10vw,80px)}.goStats{color:#e2e8f0;font-size:18px;text-align:center;line-height:1.8}.goStats b{color:#fbbf24}.replayBtn{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:50px;padding:16px 48px;font-size:20px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;margin-top:8px}.menuBtn{background:transparent;color:#a78bfa;border:2px solid #a78bfa;border-radius:50px;padding:12px 40px;font-size:16px;font-weight:700;cursor:pointer}#killFeed{position:fixed;top:80px;right:12px;z-index:15;pointer-events:none;display:flex;flex-direction:column;gap:4px;max-width:200px}.killMsg{background:rgba(0,0,0,.7);border-radius:8px;padding:4px 10px;font-size:12px;color:#fff;font-weight:700;border-left:3px solid #f97316}.particle{position:fixed;pointer-events:none;z-index:50;border-radius:50%;animation:pf .6s forwards}@keyframes pf{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}.floatText{position:fixed;pointer-events:none;z-index:60;font-weight:900;font-size:20px;animation:fu 1s forwards}@keyframes fu{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
+#brawlerSelect{position:fixed;inset:0;z-index:150;background:radial-gradient(ellipse at 50% 30%,#3d1a6e 0%,#1a0a2e 70%);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;gap:16px;overflow-y:auto;}
+.bsTitle{font-family:'Fredoka One',cursive;font-size:clamp(28px,6vw,52px);color:#fff;text-shadow:0 0 20px #f97316;letter-spacing:3px;margin-top:10px;}
+.bsSubtitle{color:#a78bfa;font-size:14px;font-weight:700;margin-top:-10px;}
+.brawlerGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;width:100%;max-width:700px;}
+.brawlerCard{background:linear-gradient(135deg,#2d1b69,#1e1040);border:3px solid rgba(255,255,255,.15);border-radius:16px;padding:16px;cursor:pointer;transition:all .2s;text-align:center;position:relative;overflow:hidden;}
+.brawlerCard:hover,.brawlerCard:active{transform:translateY(-4px) scale(1.04);border-color:rgba(255,255,255,.5);}
+.brawlerCard.selected{border-color:#f97316!important;box-shadow:0 0 24px rgba(249,115,22,.6);}
+.brawlerAvatar{width:70px;height:70px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:28px;border:3px solid rgba(255,255,255,.2);position:relative;}
+.brawlerCardName{color:#fff;font-size:15px;font-weight:900;letter-spacing:1px;}
+.brawlerWeapon{color:#a78bfa;font-size:11px;margin-top:2px;}
+.brawlerStats{display:flex;gap:6px;margin-top:8px;justify-content:center;}
+.statBar{flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;}
+.statFill{height:100%;border-radius:4px;}
+.statLabels{display:flex;gap:6px;justify-content:center;margin-top:3px;}
+.statLabel{flex:1;font-size:8px;color:#6b7280;text-align:center;}
+.bsStartBtn{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;border:none;border-radius:50px;padding:16px 52px;font-size:20px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;box-shadow:0 6px 24px rgba(249,115,22,.5);text-transform:uppercase;margin-top:8px;margin-bottom:20px;}
+.bsBack{background:transparent;color:#a78bfa;border:2px solid #a78bfa;border-radius:50px;padding:10px 32px;font-size:14px;font-weight:700;cursor:pointer;}
+.weaponIcons{shotgun:'💥',sniper:'🎯',bomb:'💣',pistol:'🔫',laser:'⚡',rocket:'🚀'}
+</style></head><body>
+<div id="mainMenu"><div class="logo">BRAWL ZONE</div><div class="subtitle">⚡ РОССИЙСКИЙ АНАЛОГ ⚡</div><div class="menuModes"><div class="modeCard selectedMode" onclick="selectMode('showdown')" id="mode_showdown"><div class="modeIcon">💀</div><div class="modeName">SHOWDOWN</div><div class="modeDesc">Один против всех</div></div><div class="modeCard" onclick="selectMode('brawl3v3')" id="mode_brawl3v3"><div class="modeIcon">⚔️</div><div class="modeName">3 vs 3</div><div class="modeDesc">Командный бой</div></div><div class="modeCard" onclick="selectMode('crystals')" id="mode_crystals"><div class="modeIcon">💎</div><div class="modeName">КРИСТАЛЛЫ</div><div class="modeDesc">Захват ресурсов</div></div></div><button class="startBtn" onclick="showBrawlerSelect()">🔥 ИГРАТЬ!</button></div>
+
+<div id="brawlerSelect">
+  <div class="bsTitle">ВЫБЕРИ БРАВЛЕРА</div>
+  <div class="bsSubtitle">Каждый бравлер уникален</div>
+  <div class="brawlerGrid" id="brawlerGrid"></div>
+  <button class="bsStartBtn" onclick="confirmBrawler()">⚔️ В БОЙ!</button>
+  <button class="bsBack" onclick="backToMenu()">← НАЗАД</button>
+</div>
+
 <canvas id="gameCanvas"></canvas>
 <div id="hud"><div class="hudTop"><div class="hudBox"><div class="hudMode" id="hudModeName">SHOWDOWN</div><div class="hudScore">Счёт: <span id="hudScore">0</span></div></div><div class="hudTimer" id="hudTimer">3:00</div><div class="hudBox"><div class="hudScore">Живых: <span id="hudAlive">10</span></div><div class="hudScore" style="color:#f97316">Убийств: <span id="hudKills">0</span></div></div></div></div>
 <div id="playerHP"><div style="display:flex;gap:8px;align-items:center"><div class="hpBar"><div class="hpFill" id="hpFill"></div></div><span style="color:#22c55e;font-size:12px;font-weight:900" id="hpText">4/4</span></div><div style="display:flex;gap:8px;align-items:center"><div class="superBar"><div class="superFill" id="superFill"></div></div><span style="color:#eab308;font-size:10px;font-weight:700">СУПЕР</span></div></div>
@@ -9,7 +37,7 @@
 <div id="fireBtn" style="position:fixed;bottom:25px;right:20px;width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#991b1b);border:4px solid rgba(255,255,255,.6);display:none;align-items:center;justify-content:center;flex-direction:column;gap:2px;z-index:30;pointer-events:all;box-shadow:0 6px 30px rgba(239,68,68,.8);-webkit-tap-highlight-color:transparent;">🔫<span style="font-size:12px;color:#fff;font-weight:900;">ОГОНЬ</span></div>
 <div id="superBtn" style="position:fixed;bottom:145px;right:25px;width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#eab308,#92400e);border:3px solid rgba(255,255,255,.3);display:none;align-items:center;justify-content:center;flex-direction:column;gap:1px;z-index:30;pointer-events:all;opacity:.4;-webkit-tap-highlight-color:transparent;">⚡<span style="font-size:9px;color:#fff;font-weight:900;">СУПЕР</span></div>
 <div id="killFeed"></div>
-<div id="gameOver"><div class="goTitle" id="goTitle" style="color:#f97316">ИГРА ОКОНЧЕНА</div><div class="goStats" id="goStats"></div><button class="replayBtn" onclick="startGame()">🔄 ЕЩЁ РАЗ</button><button class="menuBtn" onclick="showMenu()">← МЕНЮ</button></div>
+<div id="gameOver"><div class="goTitle" id="goTitle" style="color:#f97316">ИГРА ОКОНЧЕНА</div><div class="goStats" id="goStats"></div><button class="replayBtn" onclick="showBrawlerSelect()">🔄 ЕЩЁ РАЗ</button><button class="menuBtn" onclick="showMenu()">← МЕНЮ</button></div>
 <script>
 const canvas=document.getElementById('gameCanvas'),ctx=canvas.getContext('2d');
 const TILE=64,MAP_W=25,MAP_H=18;
@@ -57,6 +85,79 @@ window.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
 window.addEventListener('mousedown',e=>{if(!gameRunning||!player||!player.alive)return;if(e.button===0)shoot(player,mouseX+camX,mouseY+camY);if(e.button===2&&player.superCharge>=100){player.superCharge=0;shoot(player,mouseX+camX,mouseY+camY,true);}});
 window.addEventListener('contextmenu',e=>e.preventDefault());
 window.addEventListener('keydown',e=>{if(e.code==='Space'&&gameRunning&&player&&player.alive&&player.superCharge>=100){player.superCharge=0;shoot(player,Math.cos(player.angle)*500+player.x,Math.sin(player.angle)*500+player.y,true);}});
+
+const WEAPON_ICON={'shotgun':'💥','sniper':'🎯','bomb':'💣','pistol':'🔫','laser':'⚡','rocket':'🚀'};
+const WEAPON_NAME={'shotgun':'Дробовик','sniper':'Снайпер','bomb':'Бомбомёт','pistol':'Пистолет','laser':'Лазер','rocket':'Ракетница'};
+let selectedBrawlerIdx=0;
+
+function showBrawlerSelect(){
+  document.getElementById('mainMenu').style.display='none';
+  document.getElementById('brawlerSelect').style.display='flex';
+  renderBrawlerGrid();
+}
+
+function renderBrawlerGrid(){
+  const grid=document.getElementById('brawlerGrid');
+  grid.innerHTML='';
+  BR.forEach((b,i)=>{
+    const card=document.createElement('div');
+    card.className='brawlerCard'+(i===selectedBrawlerIdx?' selected':'');
+    card.onclick=()=>selectBrawler(i);
+    const hpW=Math.round(b.hp/6*100), spdW=Math.round(b.speed/4*100);
+    card.innerHTML=`
+      <div class="brawlerAvatar" style="background:${b.color}22;box-shadow:0 0 16px ${b.color}44">
+        <svg width="50" height="50" viewBox="0 0 50 50">
+          <circle cx="25" cy="25" r="20" fill="${b.color}" stroke="rgba(0,0,0,0.4)" stroke-width="2"/>
+          <circle cx="25" cy="25" r="18" fill="rgba(255,255,255,0.08)"/>
+          <circle cx="18" cy="21" r="4" fill="#1f2937"/>
+          <circle cx="32" cy="21" r="4" fill="#1f2937"/>
+          <circle cx="19" cy="21" r="2" fill="#fff"/>
+          <circle cx="33" cy="21" r="2" fill="#fff"/>
+          <path d="M19 31 Q25 36 31 31" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <rect x="22" y="33" width="6" height="10" rx="2" fill="#374151"/>
+        </svg>
+      </div>
+      <div class="brawlerCardName">${b.name}</div>
+      <div class="brawlerWeapon">${WEAPON_ICON[b.weapon]} ${WEAPON_NAME[b.weapon]}</div>
+      <div class="brawlerStats">
+        <div class="statBar"><div class="statFill" style="width:${hpW}%;background:#22c55e"></div></div>
+        <div class="statBar"><div class="statFill" style="width:${spdW}%;background:#06b6d4"></div></div>
+      </div>
+      <div class="statLabels"><div class="statLabel">❤️ HP</div><div class="statLabel">💨 Скорость</div></div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function selectBrawler(idx){
+  selectedBrawlerIdx=idx;
+  renderBrawlerGrid();
+}
+
+function confirmBrawler(){
+  document.getElementById('brawlerSelect').style.display='none';
+  startGameWithBrawler(selectedBrawlerIdx);
+}
+
+function backToMenu(){
+  document.getElementById('brawlerSelect').style.display='none';
+  document.getElementById('mainMenu').style.display='flex';
+}
+
+function startGameWithBrawler(brawlerIdx){
+  document.getElementById('gameOver').style.display='none';
+  kills=0;score=0;crystals=0;
+  genMap();
+  // Создаём игрока с выбранным бравлером
+  const b=BR[brawlerIdx];
+  player={x:12*TILE+32,y:9*TILE+32,hp:b.hp,maxHp:b.hp,brawler:b,angle:0,shootCooldown:0,superCharge:0,crystals:0,team:0,alive:true,name:'ТЫ',inBush:false,invul:0};
+  bots=[];
+  if(currentMode==='showdown'){for(let i=0;i<9;i++)bots.push(mkBot(i,1));document.getElementById('hudModeName').textContent='💀 SHOWDOWN';}
+  else if(currentMode==='brawl3v3'){for(let i=0;i<2;i++)bots.push(mkBot(i,0));for(let i=2;i<5;i++)bots.push(mkBot(i,1));player.team=0;document.getElementById('hudModeName').textContent='⚔️ 3 VS 3';}
+  else{for(let i=0;i<6;i++)bots.push(mkBot(i,1));document.getElementById('hudModeName').textContent='💎 КРИСТАЛЛЫ';document.getElementById('crystalCount').style.display='flex';}
+  showUI();startTimer();gameRunning=true;lastT=performance.now();animFrame=requestAnimationFrame(loop);
+}
+
 function setupJoy(){const jL=document.getElementById('joystickLeft'),jLI=document.getElementById('joyLeftInner');let active=false,sx=0,sy=0;jL.addEventListener('touchstart',e=>{e.preventDefault();active=true;const t=e.changedTouches[0],r=jL.getBoundingClientRect();sx=r.left+r.width/2;sy=r.top+r.height/2;},{passive:false});jL.addEventListener('touchmove',e=>{e.preventDefault();if(!active)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy,maxR=40,d=Math.min(Math.hypot(dx,dy),maxR),ang=Math.atan2(dy,dx);jLI.style.transform='translate(calc(-50% + '+Math.cos(ang)*d+'px),calc(-50% + '+Math.sin(ang)*d+'px))';const n=d/maxR;joyLX=Math.cos(ang)*n;joyLY=Math.sin(ang)*n;},{passive:false});jL.addEventListener('touchend',e=>{active=false;jLI.style.transform='translate(-50%,-50%)';joyLX=0;joyLY=0;});}
 function setupFire(){const fb=document.getElementById('fireBtn'),sb=document.getElementById('superBtn');fb.addEventListener('touchstart',e=>{e.preventDefault();if(!gameRunning||!player||!player.alive)return;shoot(player,player.x+Math.cos(player.angle)*300,player.y+Math.sin(player.angle)*300);fb.style.transform='scale(.92)';},{passive:false});fb.addEventListener('touchend',e=>{e.preventDefault();fb.style.transform='scale(1)';},{passive:false});sb.addEventListener('touchstart',e=>{e.preventDefault();if(!gameRunning||!player||!player.alive||player.superCharge<100)return;player.superCharge=0;shoot(player,player.x+Math.cos(player.angle)*500,player.y+Math.sin(player.angle)*500,true);},{passive:false});setInterval(()=>{if(player)sb.style.opacity=player.superCharge>=100?'1':'.35';},200);}
 function resize(){W=window.innerWidth;H=window.innerHeight;canvas.width=W;canvas.height=H;isMobile='ontouchstart' in window||W<900;}
