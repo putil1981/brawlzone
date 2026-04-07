@@ -1,71 +1,102 @@
 <!DOCTYPE html>
-<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>BRAWL ZONE</title><link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#1a0a2e;overflow:hidden;font-family:'Nunito',sans-serif;touch-action:none}
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>BRAWL ZONE</title><link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0520;overflow:hidden;font-family:'Nunito',sans-serif;touch-action:none}
+
 /* ===== ЖИВОЕ МЕНЮ ===== */
 #menuCanvas{position:fixed;inset:0;z-index:99;pointer-events:none;}
-#mainMenu{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:clamp(10px,4vh,40px);gap:clamp(8px,2vh,18px);overflow:hidden;}
-
-/* Логотип с хохломой */
-.logoWrap{position:relative;text-align:center;}
-.logoOrn{color:#d97706;font-size:clamp(14px,3vw,20px);letter-spacing:8px;opacity:.8;animation:ornPulse 3s ease-in-out infinite;}
-@keyframes ornPulse{0%,100%{opacity:.6;transform:scaleX(1)}50%{opacity:1;transform:scaleX(1.05)}}
-.logo{font-family:'Fredoka One',cursive;font-size:clamp(52px,12vw,100px);color:#fff;letter-spacing:5px;line-height:1;
-  text-shadow:0 0 40px #ff6b35,0 0 80px #ff6b3566,0 5px 0 #c2410c,0 10px 0 #7c2d12,0 15px 30px rgba(0,0,0,.5);
-  animation:logoBounce 2s ease-in-out infinite;}
-@keyframes logoBounce{0%,100%{transform:scale(1) rotate(-.5deg);text-shadow:0 0 40px #ff6b35,0 0 80px #ff6b3566,0 5px 0 #c2410c,0 10px 0 #7c2d12;}
-  50%{transform:scale(1.04) rotate(.5deg);text-shadow:0 0 60px #ff6b35,0 0 120px #ff6b3588,0 5px 0 #c2410c,0 10px 0 #7c2d12;}}
-.subtitle{color:#fbbf24;font-size:clamp(13px,3vw,18px);font-weight:900;letter-spacing:3px;margin-top:-4px;
-  text-shadow:0 2px 10px rgba(0,0,0,.6);animation:subGlow 2s ease-in-out infinite alternate;}
-@keyframes subGlow{from{color:#fbbf24;text-shadow:0 0 8px #f59e0b88;}to{color:#fde68a;text-shadow:0 0 20px #f59e0b;}}
+#mainMenu{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:clamp(8px,3vh,32px);gap:clamp(8px,2vh,16px);overflow:hidden;}
+.logoWrap{text-align:center;}
+.logoOrn{color:#d97706;font-size:clamp(12px,2.5vw,18px);letter-spacing:10px;opacity:.8;animation:ornPulse 3s ease-in-out infinite;}
+@keyframes ornPulse{0%,100%{opacity:.5;letter-spacing:10px}50%{opacity:1;letter-spacing:14px}}
+.logo{font-family:'Fredoka One',cursive;font-size:clamp(48px,11vw,96px);color:#fff;letter-spacing:5px;line-height:1;
+  text-shadow:0 0 40px #ff6b35,0 0 80px #ff6b3555,0 5px 0 #c2410c,0 10px 0 #7c2d12,0 15px 30px rgba(0,0,0,.5);
+  animation:logoBounce 2.5s ease-in-out infinite;}
+@keyframes logoBounce{0%,100%{transform:scale(1) rotate(-.5deg);}50%{transform:scale(1.04) rotate(.5deg);text-shadow:0 0 60px #ff6b35,0 0 120px #ff6b3588,0 5px 0 #c2410c,0 10px 0 #7c2d12;}}
+.subtitle{color:#fbbf24;font-size:clamp(12px,2.8vw,17px);font-weight:900;letter-spacing:3px;margin-top:-2px;
+  animation:subGlow 2s ease-in-out infinite alternate;}
+@keyframes subGlow{from{color:#fbbf24;opacity:.8}to{color:#fde68a;opacity:1;text-shadow:0 0 20px #f59e0b;}}
 
 /* Режимы — горизонтальный скролл */
-.menuModes{display:flex;gap:12px;padding:4px 20px;overflow-x:auto;max-width:100%;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+.menuModes{display:flex;gap:10px;padding:4px 16px;overflow-x:auto;max-width:100%;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
 .menuModes::-webkit-scrollbar{display:none;}
-.modeCard{flex:0 0 auto;width:clamp(140px,38vw,200px);
-  background:linear-gradient(135deg,rgba(45,27,105,.95),rgba(30,16,64,.95));
-  border:2px solid rgba(255,255,255,.12);border-radius:22px;
-  padding:clamp(14px,3vw,22px) clamp(12px,3vw,20px);
+.modeCard{flex:0 0 auto;width:clamp(130px,36vw,185px);
+  background:linear-gradient(145deg,rgba(55,30,110,.97),rgba(28,14,60,.97));
+  border:2px solid rgba(255,255,255,.1);border-radius:22px;
+  padding:clamp(12px,2.5vw,20px) clamp(10px,2.5vw,16px);
   cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);
   text-align:center;scroll-snap-align:center;
-  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
   position:relative;overflow:hidden;}
-.modeCard::before{content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 60%);
-  opacity:0;transition:opacity .2s;}
-.modeCard:hover::before,.modeCard:active::before{opacity:1;}
-.modeCard:hover{transform:translateY(-6px) scale(1.05);border-color:rgba(255,255,255,.35);
-  box-shadow:0 16px 48px rgba(0,0,0,.5);}
-.modeCard:active{transform:scale(.96);}
-.modeIcon{font-size:clamp(32px,8vw,48px);margin-bottom:6px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));}
-.modeName{color:#fff;font-size:clamp(13px,3.5vw,17px);font-weight:900;letter-spacing:1px;}
-.modeDesc{color:#a78bfa;font-size:clamp(10px,2.5vw,12px);margin-top:3px;}
+.modeCard::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.07),transparent 50%);
+  opacity:1;}
+.modeCard:hover{transform:translateY(-8px) scale(1.06);
+  border-color:rgba(255,255,255,.3);
+  box-shadow:0 20px 50px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.15);}
+.modeCard:active{transform:scale(.94);}
+.modeIcon{font-size:clamp(30px,7vw,44px);margin-bottom:6px;
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,.6));display:block;}
+.modeName{color:#fff;font-size:clamp(12px,3vw,16px);font-weight:900;letter-spacing:1px;}
+.modeDesc{color:#a78bfa;font-size:clamp(9px,2vw,11px);margin-top:3px;opacity:.8;}
 .selectedMode{border-color:#f97316!important;
-  box-shadow:0 0 0 1px #f97316,0 0 30px rgba(249,115,22,.5),0 8px 32px rgba(0,0,0,.4)!important;}
+  box-shadow:0 0 0 1px #f97316,0 0 24px rgba(249,115,22,.6),0 8px 32px rgba(0,0,0,.5)!important;}
 .selectedMode .modeName{color:#fbbf24;}
+.selectedMode .modeIcon{animation:iconBounce .6s ease-in-out infinite alternate;}
+@keyframes iconBounce{from{transform:translateY(0)}to{transform:translateY(-4px)}}
 
-/* Кнопка ИГРАТЬ — главная фишка */
-.startBtnWrap{position:relative;margin-top:4px;}
-.startBtnGlow{position:absolute;inset:-12px;border-radius:60px;
-  background:radial-gradient(ellipse,rgba(249,115,22,.5),transparent 70%);
-  animation:btnGlow 1.5s ease-in-out infinite alternate;filter:blur(8px);}
-@keyframes btnGlow{from{opacity:.6;transform:scale(.95)}to{opacity:1;transform:scale(1.05)}}
-.startBtn{position:relative;
-  background:linear-gradient(135deg,#ff8c00,#f97316,#dc2626);
-  background-size:200% 200%;
+/* Кнопка ИГРАТЬ */
+.startBtnWrap{position:relative;}
+.startBtnGlow{position:absolute;inset:-16px;border-radius:60px;
+  background:radial-gradient(ellipse,rgba(249,115,22,.6),transparent 70%);
+  animation:btnGlow 1.4s ease-in-out infinite alternate;filter:blur(10px);}
+@keyframes btnGlow{from{opacity:.5;transform:scale(.9)}to{opacity:1;transform:scale(1.1)}}
+.startBtn{position:relative;z-index:1;
+  background:linear-gradient(135deg,#ff9500,#f97316 40%,#dc2626);
   color:#fff;border:none;border-radius:50px;
-  padding:clamp(14px,3vh,20px) clamp(40px,10vw,64px);
-  font-size:clamp(20px,5vw,26px);font-weight:900;
-  font-family:'Fredoka One',cursive;letter-spacing:3px;
+  padding:clamp(14px,3vh,20px) clamp(44px,11vw,72px);
+  font-size:clamp(20px,5vw,28px);font-weight:900;
+  font-family:'Fredoka One',cursive;letter-spacing:4px;
   cursor:pointer;
-  box-shadow:0 8px 0 #92400e,0 12px 32px rgba(249,115,22,.6);
-  transition:all .12s;text-transform:uppercase;
-  animation:btnPulse 1.8s ease-in-out infinite;}
-@keyframes btnPulse{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.startBtn:hover{transform:translateY(-3px);box-shadow:0 11px 0 #92400e,0 16px 40px rgba(249,115,22,.7);}
-.startBtn:active{transform:translateY(4px);box-shadow:0 4px 0 #92400e,0 6px 20px rgba(249,115,22,.5);}
+  box-shadow:0 8px 0 #92400e,0 14px 40px rgba(249,115,22,.7),inset 0 2px 0 rgba(255,255,255,.2);
+  transition:all .12s;text-transform:uppercase;border:2px solid rgba(255,200,100,.3);}
+.startBtn:hover{transform:translateY(-4px);
+  box-shadow:0 12px 0 #92400e,0 20px 50px rgba(249,115,22,.8),inset 0 2px 0 rgba(255,255,255,.3);}
+.startBtn:active{transform:translateY(5px);
+  box-shadow:0 3px 0 #92400e,0 6px 20px rgba(249,115,22,.5);}
 
-/* Хинт */
-.menuHint{color:rgba(255,255,255,.35);font-size:11px;letter-spacing:1px;}
-#gameCanvas{display:block}#hud{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}.hudTop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:12px 16px}.hudBox{background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:8px 16px;backdrop-filter:blur(8px)}.hudTimer{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);border:2px solid #fbbf24;border-radius:50px;padding:6px 20px;color:#fbbf24;font-size:24px;font-weight:900;font-family:'Fredoka One',cursive}.hudScore{color:#fff;font-size:14px;font-weight:900}.hudScore span{color:#fbbf24;font-size:20px}.hudMode{color:#a78bfa;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px}#joystickLeft{position:fixed;bottom:30px;left:30px;pointer-events:all;z-index:20;display:none}.joyOuter{width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08);border:3px solid rgba(255,255,255,.2);position:relative}.joyInner{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.4);border:3px solid rgba(255,255,255,.7);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}#playerHP{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px}.hpBar{width:200px;height:14px;background:rgba(0,0,0,.5);border-radius:20px;border:2px solid rgba(255,255,255,.2);overflow:hidden}.hpFill{height:100%;background:linear-gradient(90deg,#22c55e,#86efac);border-radius:20px;transition:width .2s}.superBar{width:200px;height:8px;background:rgba(0,0,0,.5);border-radius:20px;overflow:hidden}.superFill{height:100%;background:linear-gradient(90deg,#eab308,#fde047);border-radius:20px;transition:width .3s}.crystalCount{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;color:#a855f7;font-size:18px;font-weight:900;background:rgba(0,0,0,.6);padding:6px 16px;border-radius:50px;border:2px solid #a855f7}#gameOver{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;backdrop-filter:blur(8px)}.goTitle{font-family:'Fredoka One',cursive;font-size:clamp(48px,10vw,80px)}.goStats{color:#e2e8f0;font-size:18px;text-align:center;line-height:1.8}.goStats b{color:#fbbf24}.replayBtn{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:50px;padding:16px 48px;font-size:20px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;margin-top:8px}.menuBtn{background:transparent;color:#a78bfa;border:2px solid #a78bfa;border-radius:50px;padding:12px 40px;font-size:16px;font-weight:700;cursor:pointer}#killFeed{position:fixed;top:80px;right:12px;z-index:15;pointer-events:none;display:flex;flex-direction:column;gap:4px;max-width:200px}.killMsg{background:rgba(0,0,0,.7);border-radius:8px;padding:4px 10px;font-size:12px;color:#fff;font-weight:700;border-left:3px solid #f97316}.particle{position:fixed;pointer-events:none;z-index:50;border-radius:50%;animation:pf .6s forwards}@keyframes pf{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}.floatText{position:fixed;pointer-events:none;z-index:60;font-weight:900;font-size:20px;animation:fu 1s forwards}@keyframes fu{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
+.menuHint{color:rgba(255,255,255,.3);font-size:10px;letter-spacing:1px;text-align:center;}
+
+#gameCanvas{display:block;}
+#hud{position:fixed;inset:0;pointer-events:none;z-index:10;display:none;}
+.hudTop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:12px 16px;}
+.hudBox{background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:8px 16px;backdrop-filter:blur(8px);}
+.hudTimer{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);border:2px solid #fbbf24;border-radius:50px;padding:6px 20px;color:#fbbf24;font-size:24px;font-weight:900;font-family:'Fredoka One',cursive;}
+.hudScore{color:#fff;font-size:14px;font-weight:900;}.hudScore span{color:#fbbf24;font-size:20px;}
+.hudMode{color:#a78bfa;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+#joystickLeft{position:fixed;bottom:30px;left:30px;pointer-events:all;z-index:20;display:none;}
+.joyOuter{width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08);border:3px solid rgba(255,255,255,.2);position:relative;}
+.joyInner{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.4);border:3px solid rgba(255,255,255,.7);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+#playerHP{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.hpBar{width:200px;height:14px;background:rgba(0,0,0,.5);border-radius:20px;border:2px solid rgba(255,255,255,.2);overflow:hidden;}
+.hpFill{height:100%;background:linear-gradient(90deg,#22c55e,#86efac);border-radius:20px;transition:width .2s;box-shadow:0 0 8px rgba(34,197,94,.6);}
+.superBar{width:200px;height:8px;background:rgba(0,0,0,.5);border-radius:20px;border:2px solid rgba(250,204,21,.4);overflow:hidden;}
+.superFill{height:100%;background:linear-gradient(90deg,#eab308,#fde047);border-radius:20px;transition:width .3s;box-shadow:0 0 6px rgba(234,179,8,.7);}
+.crystalCount{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;color:#a855f7;font-size:18px;font-weight:900;background:rgba(0,0,0,.6);padding:6px 16px;border-radius:50px;border:2px solid #a855f7;}
+#gameOver{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;backdrop-filter:blur(8px);}
+.goTitle{font-family:'Fredoka One',cursive;font-size:clamp(48px,10vw,80px);text-shadow:0 4px 20px rgba(0,0,0,.5);}
+.goStats{color:#e2e8f0;font-size:18px;text-align:center;line-height:1.8;}.goStats b{color:#fbbf24;}
+.replayBtn{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:50px;padding:16px 48px;font-size:20px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;box-shadow:0 6px 24px rgba(124,58,237,.5);transition:all .15s;margin-top:8px;}
+.menuBtn{background:transparent;color:#a78bfa;border:2px solid #a78bfa;border-radius:50px;padding:12px 40px;font-size:16px;font-weight:700;cursor:pointer;}
+#killFeed{position:fixed;top:80px;right:12px;z-index:15;pointer-events:none;display:flex;flex-direction:column;gap:4px;max-width:200px;}
+.killMsg{background:rgba(0,0,0,.7);border-radius:8px;padding:4px 10px;font-size:12px;color:#fff;font-weight:700;border-left:3px solid #f97316;}
+.particle{position:fixed;pointer-events:none;z-index:50;border-radius:50%;animation:pf .6s forwards;}
+@keyframes pf{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}
+.floatText{position:fixed;pointer-events:none;z-index:60;font-weight:900;font-size:20px;animation:fu 1s forwards;text-shadow:0 2px 8px rgba(0,0,0,.8);}
+@keyframes fu{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.3)}}
+
+/* Выбор бравлера */
 #brawlerSelect{position:fixed;inset:0;z-index:150;background:radial-gradient(ellipse at 50% 30%,#3d1a6e 0%,#1a0a2e 70%);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;gap:16px;overflow-y:auto;}
 .bsTitle{font-family:'Fredoka One',cursive;font-size:clamp(28px,6vw,52px);color:#fff;text-shadow:0 0 20px #f97316;letter-spacing:3px;margin-top:10px;}
 .bsSubtitle{color:#a78bfa;font-size:14px;font-weight:700;margin-top:-10px;}
@@ -83,7 +114,6 @@
 .statLabel{flex:1;font-size:8px;color:#6b7280;text-align:center;}
 .bsStartBtn{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;border:none;border-radius:50px;padding:16px 52px;font-size:20px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;box-shadow:0 6px 24px rgba(249,115,22,.5);text-transform:uppercase;margin-top:8px;margin-bottom:20px;}
 .bsBack{background:transparent;color:#a78bfa;border:2px solid #a78bfa;border-radius:50px;padding:10px 32px;font-size:14px;font-weight:700;cursor:pointer;}
-.weaponIcons{shotgun:'💥',sniper:'🎯',bomb:'💣',pistol:'🔫',laser:'⚡',rocket:'🚀'}
 </style></head><body>
 
 <canvas id="menuCanvas"></canvas>
