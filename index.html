@@ -172,15 +172,15 @@ const TILE=64,MAP_W=25,MAP_H=18;
 let W,H,camX=0,camY=0,currentMode='showdown',gameRunning=false,animFrame,gameTime=180,timerInterval,kills=0,score=0,crystals=0;
 const keys={};let mouseX=0,mouseY=0,isMobile=false,joyLX=0,joyLY=0;
 const BR=[
-  {name:'Факел',  color:'#ff6b35', color2:'#ffd23f', weapon:'shotgun', hp:4, speed:3.2, desc:'Огненный дух'},
-  {name:'Фрост',  color:'#67e8f9', color2:'#0ea5e9', weapon:'sniper',  hp:3, speed:3.8, desc:'Ледяной голем'},
-  {name:'Бочка',  color:'#a78bfa', color2:'#7c3aed', weapon:'bomb',    hp:5, speed:2.8, desc:'Гном-подрывник'},
-  {name:'Молния', color:'#fde047', color2:'#f59e0b', weapon:'pistol',  hp:3, speed:4.0, desc:'Электро-лис'},
-  {name:'Корень', color:'#4ade80', color2:'#166534', weapon:'shotgun', hp:6, speed:2.5, desc:'Древесный тролль'},
-  {name:'Нова',   color:'#e879f9', color2:'#9333ea', weapon:'laser',   hp:3, speed:3.5, desc:'Звёздная магия'},
-  {name:'Мрак',   color:'#818cf8', color2:'#1e1b4b', weapon:'pistol',  hp:4, speed:3.6, desc:'Теневой кот'},
-  {name:'Турбо',  color:'#fb923c', color2:'#7f1d1d', weapon:'rocket',  hp:4, speed:3.0, desc:'Робот-пилот'},
-];
+  {name:'Яга',     color:'#9333ea', color2:'#4a044e', weapon:'poison',  hp:4, speed:3.2, desc:'Ведьма в косухе',    age:0},
+  {name:'Леший',   color:'#16a34a', color2:'#14532d', weapon:'shotgun', hp:6, speed:2.6, desc:'Качок из чащи',      rage:0},
+  {name:'Кащей',   color:'#1e293b', color2:'#7c3aed', weapon:'sword',   hp:3, speed:3.8, desc:'Ловелас с мечом'},
+  {name:'Соловей', color:'#dc2626', color2:'#7f1d1d', weapon:'guitar',  hp:3, speed:3.6, desc:'Рок-певец-убийца'},
+  {name:'Факел',   color:'#f97316', color2:'#7c2d12', weapon:'shotgun', hp:4, speed:3.2, desc:'Огненный дух'},
+  {name:'Фрост',   color:'#67e8f9', color2:'#0369a1', weapon:'sniper',  hp:3, speed:3.8, desc:'Ледяной голем'},
+  {name:'Нова',    color:'#e879f9', color2:'#9333ea', weapon:'laser',   hp:3, speed:3.5, desc:'Звёздная магия'},
+  {name:'Турбо',   color:'#fb923c', color2:'#7f1d1d', weapon:'rocket',  hp:4, speed:3.0, desc:'Робот-пилот'},
+]
 let mapTiles=[],crystalSpawns=[],crystalObjs=[],player=null,bots=[],bullets=[],explosions=[];
 function genMap(){mapTiles=[];crystalSpawns=[];for(let y=0;y<MAP_H;y++){mapTiles[y]=[];for(let x=0;x<MAP_W;x++){if(x===0||y===0||x===MAP_W-1||y===MAP_H-1){mapTiles[y][x]=1;continue;}const r=Math.random();mapTiles[y][x]=r<.1?1:r<.16?2:0;}}for(let y=7;y<11;y++)for(let x=10;x<15;x++)mapTiles[y][x]=0;crystalSpawns=[{x:12,y:9},{x:8,y:6},{x:16,y:12},{x:5,y:11},{x:19,y:6}];spawnCrystals();}
 function spawnCrystals(){crystalObjs=crystalSpawns.map(s=>({x:s.x*TILE+TILE/2,y:s.y*TILE+TILE/2,alive:true}));}
@@ -204,37 +204,212 @@ function updCrystals(){if(!player.alive)return;for(const c of crystalObjs){if(!c
 function drawMap(){const sx=Math.floor(camX/TILE),ex=Math.ceil((camX+W)/TILE)+1,sy=Math.floor(camY/TILE),ey=Math.ceil((camY+H)/TILE)+1;for(let y=Math.max(0,sy);y<Math.min(MAP_H,ey);y++)for(let x=Math.max(0,sx);x<Math.min(MAP_W,ex);x++){const t=mapTiles[y][x],px=x*TILE-camX,py=y*TILE-camY;if(t===1){ctx.fillStyle='#374151';ctx.fillRect(px,py,TILE,TILE);ctx.fillStyle='#4b5563';ctx.fillRect(px+2,py+2,TILE-4,TILE/3);}else if(t===2){ctx.fillStyle='#14532d';ctx.fillRect(px,py,TILE,TILE);ctx.fillStyle='#166534';for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(px+8+i*18,py+20,12,0,Math.PI*2);ctx.fill();}}else{ctx.fillStyle=(x+y)%2?'#1a3318':'#1e3a1e';ctx.fillRect(px,py,TILE,TILE);}}}
 function drawCrystals(){for(const c of crystalObjs){if(!c.alive)continue;const cx=c.x-camX,cy=c.y-camY;if(cx<-20||cy<-20||cx>W+20||cy>H+20)continue;ctx.save();ctx.translate(cx,cy);ctx.rotate(Math.sin(Date.now()/500)*.2);ctx.fillStyle='#a855f7';ctx.beginPath();ctx.moveTo(0,-14);ctx.lineTo(10,0);ctx.lineTo(0,14);ctx.lineTo(-10,0);ctx.closePath();ctx.fill();ctx.restore();}}
 function drawHero(ctx, b, t){
-  const c=b.color, c2=b.color2, w=b.weapon, n=b.name;
-  const blink = Math.sin(t*3)>0.97; // мигание глаз
-  const bob = Math.sin(t*4)*1.5;    // покачивание
-
+  const c=b.color, c2=b.color2, n=b.name;
+  const blink=Math.sin(t*3)>0.97;
+  const bob=Math.sin(t*4)*1.5;
   ctx.save();
-  ctx.translate(0, bob);
+  ctx.translate(0,bob);
 
-  if(n==='Факел'){
-    // Огненная аура
+  if(n==='Яга'){
+    // Баба Яга — ведьма в косухе
+    const age = b.age||0; // 0=молодая, 3=старуха
+    // Волосы (становятся седыми с возрастом)
+    const hairColor = age<2 ? '#1a1a2e' : age<3 ? '#9ca3af' : '#e5e7eb';
+    ctx.fillStyle=hairColor;
+    // Длинные волосы
+    for(let i=-1;i<=1;i+=2){
+      ctx.beginPath();
+      ctx.moveTo(i*8,-18);
+      ctx.bezierCurveTo(i*16,-10,i*18,8,i*14,22);
+      ctx.lineWidth=6;ctx.strokeStyle=hairColor;ctx.stroke();
+    }
+    // Косуха
+    const jacketColor = age<3 ? '#1f2937' : '#4b5563';
+    ctx.fillStyle=jacketColor;
+    ctx.beginPath();ctx.roundRect(-16,2,32,20,4);ctx.fill();
+    // Заклёпки на косухе
+    ctx.fillStyle='#fbbf24';
+    [-10,0,10].forEach(x=>{ctx.beginPath();ctx.arc(x,6,2,0,Math.PI*2);ctx.fill();});
+    // Лицо (меняется с возрастом)
+    const skinColor = age===0?'#fde7cc':age===1?'#f5d0a9':age===2?'#d4a473':'#a0785a';
+    const faceGrad=ctx.createRadialGradient(-3,-8,2,0,-6,16);
+    faceGrad.addColorStop(0,skinColor);faceGrad.addColorStop(1,c2+'88');
+    ctx.fillStyle=faceGrad;
+    ctx.beginPath();
+    if(age>=3){
+      // Старуха — вытянутое лицо
+      ctx.ellipse(0,-6,12,18,0,0,Math.PI*2);
+    } else {
+      ctx.ellipse(0,-6,14,17,0,0,Math.PI*2);
+    }
+    ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=1.5;ctx.stroke();
+    // Морщины у старой
+    if(age>=2){
+      ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(-8,-4);ctx.lineTo(-4,-2);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(8,-4);ctx.lineTo(4,-2);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-6,2);ctx.lineTo(6,2);ctx.stroke();
+    }
+    // Нос (больше у старой)
+    const noseSize = 3+age;
+    ctx.fillStyle=skinColor;
+    ctx.beginPath();ctx.ellipse(0,0,noseSize,noseSize+1,0,0,Math.PI*2);ctx.fill();
+    // Фиолетовый ореол ведьмы
+    ctx.fillStyle='rgba(147,51,234,.15)';
+    ctx.beginPath();ctx.arc(0,-5,24,0,Math.PI*2);ctx.fill();
+    // Звезды вокруг
+    for(let i=0;i<5;i++){
+      const a=i*Math.PI*2/5+t*1.5,r=22;
+      ctx.fillStyle=i%2===0?'#a855f7':'#fbbf24';
+      ctx.globalAlpha=.6+Math.sin(t*3+i)*.3;
+      ctx.beginPath();ctx.arc(Math.cos(a)*r,Math.sin(a)*r,2,0,Math.PI*2);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+
+  } else if(n==='Леший'){
+    // Леший — качок в камуфляже
+    const rage = b.rage||0;
+    const bodyScale = 1+rage*.2;
+    ctx.scale(bodyScale,bodyScale);
+    // Камуфляжный комбез
+    const camo=['#4ade80','#16a34a','#14532d','#365314'];
+    // Торс здоровяка
+    ctx.fillStyle='#16a34a';
+    ctx.beginPath();ctx.roundRect(-18,-4,36,28,6);ctx.fill();
+    // Камуфляжные пятна
+    camo.forEach((col,i)=>{
+      ctx.fillStyle=col;ctx.globalAlpha=.5;
+      ctx.beginPath();
+      ctx.ellipse(-10+i*8,-2+Math.sin(i)*6,5+i*2,4,i*.5,0,Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    // Голова
+    ctx.fillStyle='#a16207';
+    ctx.beginPath();ctx.ellipse(0,-14,15,14,0,0,Math.PI*2);ctx.fill();
+    // Гилли-шапка (ветки и листья)
+    ctx.fillStyle='#14532d';
+    for(let i=0;i<8;i++){
+      const a=i*Math.PI/4,r=16+Math.sin(i*1.3)*4;
+      ctx.beginPath();ctx.ellipse(Math.cos(a)*r,Math.sin(a)*r-14,5,3,a,0,Math.PI*2);ctx.fill();
+    }
+    // Борода
+    ctx.fillStyle='#92400e';
+    ctx.beginPath();ctx.ellipse(0,2,10,7,0,0,Math.PI*2);ctx.fill();
+    // Мощные руки
+    ctx.fillStyle='#16a34a';
+    ctx.beginPath();ctx.ellipse(-22,4,7,12,.3,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.ellipse(22,4,7,12,-.3,0,Math.PI*2);ctx.fill();
+    // Пеньки-помощники (маленькие вокруг)
+    if(Math.sin(t)>0){
+      for(let i=0;i<3;i++){
+        const a=i*Math.PI*2/3+t*.5,r=28;
+        ctx.fillStyle='#92400e';
+        ctx.beginPath();ctx.ellipse(Math.cos(a)*r,Math.sin(a)*r,5,7,0,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#4ade80';
+        ctx.beginPath();ctx.ellipse(Math.cos(a)*r,Math.sin(a)*r-6,6,3,0,0,Math.PI*2);ctx.fill();
+      }
+    }
+
+  } else if(n==='Кащей'){
+    // Кащей — худощавый ловелас в Бриони
+    // Костюм
+    ctx.fillStyle='#0f172a';
+    ctx.beginPath();ctx.roundRect(-12,0,24,24,3);ctx.fill();
+    // Лацканы
+    ctx.fillStyle='#1e293b';
+    ctx.beginPath();ctx.moveTo(0,2);ctx.lineTo(-10,0);ctx.lineTo(-6,16);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(0,2);ctx.lineTo(10,0);ctx.lineTo(6,16);ctx.closePath();ctx.fill();
+    // Галстук LV
+    ctx.fillStyle='#b45309';
+    ctx.beginPath();ctx.moveTo(-3,2);ctx.lineTo(3,2);ctx.lineTo(2,18);ctx.lineTo(0,20);ctx.lineTo(-2,18);ctx.closePath();ctx.fill();
+    // Монограмма LV
+    ctx.fillStyle='#fbbf24';ctx.font='bold 6px Arial';ctx.textAlign='center';
+    ctx.fillText('LV',0,12);
+    // Худощавая голова
+    const kGrad=ctx.createLinearGradient(-10,-24,10,-4);
+    kGrad.addColorStop(0,'#e2e8f0');kGrad.addColorStop(1,'#94a3b8');
+    ctx.fillStyle=kGrad;
+    ctx.beginPath();ctx.ellipse(0,-14,10,16,0,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=1.5;ctx.stroke();
+    // Острые скулы
+    ctx.fillStyle='rgba(0,0,0,.15)';
+    ctx.beginPath();ctx.ellipse(-7,-10,4,6,-.3,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.ellipse(7,-10,4,6,.3,0,Math.PI*2);ctx.fill();
+    // Корона
+    ctx.fillStyle='#fbbf24';
+    ctx.beginPath();
+    ctx.moveTo(-10,-26);ctx.lineTo(-10,-22);ctx.lineTo(-5,-25);ctx.lineTo(0,-22);
+    ctx.lineTo(5,-25);ctx.lineTo(10,-22);ctx.lineTo(10,-26);ctx.closePath();ctx.fill();
+    // Меч Дарт Вейдера (светящийся)
+    const swordGlow=ctx.createLinearGradient(0,8,0,32);
+    swordGlow.addColorStop(0,'#7c3aed');swordGlow.addColorStop(1,'#a855f7');
+    ctx.fillStyle=swordGlow;ctx.shadowColor='#a855f7';ctx.shadowBlur=15;
+    ctx.fillRect(-2.5,8,5,26);
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#374151';ctx.fillRect(-5,6,10,4);// рукоять
+
+  } else if(n==='Соловей'){
+    // Соловей Разбойник — рок-певец
+    // Кожаные штаны
+    ctx.fillStyle='#1f2937';
+    ctx.beginPath();ctx.roundRect(-12,8,24,18,3);ctx.fill();
+    // Майка с принтом черепа
+    ctx.fillStyle='#7f1d1d';
+    ctx.beginPath();ctx.roundRect(-12,-4,24,14,2);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='bold 10px Arial';ctx.textAlign='center';
+    ctx.fillText('☠',0,5);
+    // Голова рокера
+    const rGrad=ctx.createRadialGradient(-3,-14,2,0,-12,14);
+    rGrad.addColorStop(0,'#fde7cc');rGrad.addColorStop(1,'#f5d0a9');
+    ctx.fillStyle=rGrad;
+    ctx.beginPath();ctx.ellipse(0,-12,12,14,0,0,Math.PI*2);ctx.fill();
+    // Ирокез
+    ctx.fillStyle=c;
+    ctx.beginPath();ctx.moveTo(-4,-22);ctx.lineTo(0,-34);ctx.lineTo(4,-22);ctx.closePath();ctx.fill();
+    // Солнечные очки
+    ctx.fillStyle='#111';
+    ctx.beginPath();ctx.roundRect(-10,-16,8,5,2);ctx.fill();
+    ctx.beginPath();ctx.roundRect(2,-16,8,5,2);ctx.fill();
+    ctx.strokeStyle='#374151';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(-2,-13.5);ctx.lineTo(2,-13.5);ctx.stroke();
+    // Гитара (электро)
+    ctx.fillStyle='#dc2626';
+    ctx.beginPath();ctx.ellipse(4,16,8,10,.3,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#b91c1c';
+    ctx.beginPath();ctx.ellipse(4,14,5,7,.3,0,Math.PI*2);ctx.fill();
+    // Звуковые волны
+    ctx.strokeStyle='#fbbf24';ctx.lineWidth=1.5;ctx.globalAlpha=.5+Math.sin(t*8)*.4;
+    for(let i=1;i<=3;i++){
+      ctx.beginPath();ctx.arc(4,16,10+i*5,.8,2.3);ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+    // Молнии от гитары
+    if(Math.sin(t*6)>0.5){
+      ctx.strokeStyle='#fde047';ctx.lineWidth=2;ctx.globalAlpha=.8;
+      ctx.beginPath();ctx.moveTo(10,12);ctx.lineTo(16,8);ctx.lineTo(13,14);ctx.lineTo(20,10);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+
+  } else if(n==='Факел'){
+    // Огненный дух
     const grad=ctx.createRadialGradient(0,0,8,0,0,28);
     grad.addColorStop(0,c+'99');grad.addColorStop(1,'transparent');
     ctx.fillStyle=grad;ctx.beginPath();ctx.arc(0,0,28,0,Math.PI*2);ctx.fill();
-    // Языки пламени сверху
     for(let i=-1;i<=1;i++){
       ctx.fillStyle=i===0?'#fff':c2;
-      ctx.beginPath();
-      ctx.moveTo(i*8,-14);
+      ctx.beginPath();ctx.moveTo(i*8,-14);
       ctx.bezierCurveTo(i*8-4,-22+Math.sin(t*6+i)*3,i*8+4,-26+Math.sin(t*5+i)*3,i*8,-30+Math.sin(t*7+i)*2);
-      ctx.bezierCurveTo(i*8+5,-26,i*8+6,-20,i*8,-14);
-      ctx.fill();
+      ctx.bezierCurveTo(i*8+5,-26,i*8+6,-20,i*8,-14);ctx.fill();
     }
-    // Тело — круглое
     const g2=ctx.createRadialGradient(-4,-4,2,0,0,18);
     g2.addColorStop(0,'#fff');g2.addColorStop(0.3,c);g2.addColorStop(1,'#7c2d12');
     ctx.fillStyle=g2;ctx.beginPath();ctx.arc(0,0,18,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=2;ctx.stroke();
 
   } else if(n==='Фрост'){
-    // Кристаллы вокруг
     for(let i=0;i<6;i++){
-      const a=i*Math.PI/3+t*0.5,r=22;
+      const a=i*Math.PI/3+t*.5,r=22;
       ctx.fillStyle=i%2===0?c:c2;ctx.globalAlpha=0.5;
       ctx.beginPath();ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r);
       ctx.lineTo(Math.cos(a+0.3)*(r-8),Math.sin(a+0.3)*(r-8));
@@ -242,238 +417,146 @@ function drawHero(ctx, b, t){
       ctx.closePath();ctx.fill();
     }
     ctx.globalAlpha=1;
-    // Тело — ромбовидное
-    ctx.fillStyle=c;
-    ctx.beginPath();ctx.moveTo(0,-20);ctx.lineTo(16,0);ctx.lineTo(0,18);ctx.lineTo(-16,0);ctx.closePath();ctx.fill();
+    ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(0,-20);ctx.lineTo(16,0);ctx.lineTo(0,18);ctx.lineTo(-16,0);ctx.closePath();ctx.fill();
     const gl=ctx.createLinearGradient(-16,-20,16,18);
     gl.addColorStop(0,'rgba(255,255,255,.5)');gl.addColorStop(1,'transparent');
     ctx.fillStyle=gl;ctx.beginPath();ctx.moveTo(0,-20);ctx.lineTo(16,0);ctx.lineTo(0,18);ctx.lineTo(-16,0);ctx.closePath();ctx.fill();
     ctx.strokeStyle=c2;ctx.lineWidth=2.5;ctx.stroke();
 
-  } else if(n==='Бочка'){
-    // Тело — бочка
-    ctx.fillStyle=c2;ctx.beginPath();ctx.ellipse(0,4,18,22,0,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle=c;ctx.beginPath();ctx.ellipse(0,4,16,20,0,0,Math.PI*2);ctx.fill();
-    // Обручи
-    ctx.strokeStyle='#7c3aed';ctx.lineWidth=3;
-    [-8,2,12].forEach(y=>{
-      ctx.beginPath();ctx.ellipse(0,y,16,4,0,0,Math.PI*2);ctx.stroke();
-    });
-    // Шляпа
-    ctx.fillStyle='#4c1d95';ctx.beginPath();ctx.ellipse(0,-16,12,5,0,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#5b21b6';ctx.fillRect(-8,-26,16,12);
-    ctx.fillStyle='#4c1d95';ctx.beginPath();ctx.ellipse(0,-26,10,4,0,0,Math.PI*2);ctx.fill();
-    // Блик на бочке
-    ctx.fillStyle='rgba(255,255,255,.2)';ctx.beginPath();ctx.ellipse(-5,-4,6,10,-.3,0,Math.PI*2);ctx.fill();
-
-  } else if(n==='Молния'){
-    // Электрический ореол
-    ctx.strokeStyle=c2;ctx.lineWidth=1.5;ctx.globalAlpha=0.6;
-    for(let i=0;i<8;i++){
-      const a=i*Math.PI/4+t,r=20+Math.sin(t*8+i)*3;
-      ctx.beginPath();ctx.moveTo(Math.cos(a)*16,Math.sin(a)*16);ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);ctx.stroke();
-    }
-    ctx.globalAlpha=1;
-    // Тело — лис (овал с ушами)
-    ctx.fillStyle=c;
-    // Уши
-    ctx.beginPath();ctx.moveTo(-10,-14);ctx.lineTo(-16,-26);ctx.lineTo(-4,-16);ctx.closePath();ctx.fill();
-    ctx.beginPath();ctx.moveTo(10,-14);ctx.lineTo(16,-26);ctx.lineTo(4,-16);ctx.closePath();ctx.fill();
-    ctx.fillStyle=c2;
-    ctx.beginPath();ctx.moveTo(-9,-15);ctx.lineTo(-13,-23);ctx.lineTo(-5,-17);ctx.closePath();ctx.fill();
-    ctx.beginPath();ctx.moveTo(9,-15);ctx.lineTo(13,-23);ctx.lineTo(5,-17);ctx.closePath();ctx.fill();
-    // Морда
-    const gf=ctx.createRadialGradient(-4,-4,2,0,0,18);
-    gf.addColorStop(0,'#fef08a');gf.addColorStop(1,c);
-    ctx.fillStyle=gf;ctx.beginPath();ctx.ellipse(0,0,16,18,0,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=1.5;ctx.stroke();
-    // Носик
-    ctx.fillStyle='#f59e0b';ctx.beginPath();ctx.ellipse(0,4,5,4,0,0,Math.PI*2);ctx.fill();
-
-  } else if(n==='Корень'){
-    // Кора — неровный большой круг
-    ctx.fillStyle=c2;
-    ctx.beginPath();
-    for(let i=0;i<12;i++){const a=i*Math.PI/6,r=22+Math.sin(i*2.3)*3;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
-    ctx.closePath();ctx.fill();
-    ctx.fillStyle=c;
-    ctx.beginPath();
-    for(let i=0;i<12;i++){const a=i*Math.PI/6,r=19+Math.sin(i*2.3)*2;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
-    ctx.closePath();ctx.fill();
-    // Текстура коры
-    ctx.strokeStyle=c2;ctx.lineWidth=1.5;ctx.globalAlpha=0.5;
-    [[-6,-8,4,6],[6,-10,-4,8],[-2,2,8,-4]].forEach(([x1,y1,x2,y2])=>{
-      ctx.beginPath();ctx.moveTo(x1,y1);ctx.quadraticCurveTo(x1+x2/2,y1+y2/2,x1+x2,y1+y2);ctx.stroke();
-    });
-    ctx.globalAlpha=1;
-    // Маленькие листья на голове
-    for(let i=-1;i<=1;i++){
-      ctx.fillStyle='#86efac';
-      ctx.beginPath();ctx.ellipse(i*8,-22+Math.sin(t*3+i)*2,5,8,i*0.4,0,Math.PI*2);ctx.fill();
-    }
-
   } else if(n==='Нова'){
-    // Звёздный шлейф
     const sg=ctx.createRadialGradient(0,0,5,0,0,30);
     sg.addColorStop(0,c+'88');sg.addColorStop(0.5,c2+'44');sg.addColorStop(1,'transparent');
     ctx.fillStyle=sg;ctx.beginPath();ctx.arc(0,0,30,0,Math.PI*2);ctx.fill();
-    // Звёздочки вокруг
     for(let i=0;i<5;i++){
       const a=i*Math.PI*2/5+t*2,r=20;
-      const sx=Math.cos(a)*r,sy=Math.sin(a)*r,ss=2+Math.sin(t*4+i);
       ctx.fillStyle=i%2===0?c:c2;ctx.globalAlpha=0.8;
-      ctx.beginPath();ctx.arc(sx,sy,ss,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(Math.cos(a)*r,Math.sin(a)*r,2+Math.sin(t*4+i),0,Math.PI*2);ctx.fill();
     }
     ctx.globalAlpha=1;
-    // Тело — звезда
-    ctx.fillStyle=c;
-    ctx.beginPath();
+    ctx.fillStyle=c;ctx.beginPath();
     for(let i=0;i<10;i++){const a=i*Math.PI/5-Math.PI/2,r=i%2===0?20:10;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
     ctx.closePath();ctx.fill();
-    const sg2=ctx.createRadialGradient(-3,-3,1,0,0,20);
-    sg2.addColorStop(0,'rgba(255,255,255,.6)');sg2.addColorStop(1,'transparent');
-    ctx.fillStyle=sg2;ctx.beginPath();
-    for(let i=0;i<10;i++){const a=i*Math.PI/5-Math.PI/2,r=i%2===0?20:10;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
-    ctx.closePath();ctx.fill();
-
-  } else if(n==='Мрак'){
-    // Тень-аура
-    ctx.fillStyle='rgba(30,27,75,.5)';
-    ctx.beginPath();ctx.arc(0,2,24,0,Math.PI*2);ctx.fill();
-    // Тело — кот с острыми ушами
-    ctx.fillStyle=c2;
-    // Уши
-    ctx.beginPath();ctx.moveTo(-12,-14);ctx.lineTo(-18,-28);ctx.lineTo(-6,-16);ctx.closePath();ctx.fill();
-    ctx.beginPath();ctx.moveTo(12,-14);ctx.lineTo(18,-28);ctx.lineTo(6,-16);ctx.closePath();ctx.fill();
-    // Тело
-    const kg=ctx.createRadialGradient(-3,-3,2,0,0,18);
-    kg.addColorStop(0,c);kg.addColorStop(1,c2);
-    ctx.fillStyle=kg;ctx.beginPath();ctx.ellipse(0,0,16,18,0,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle='rgba(129,140,248,.4)';ctx.lineWidth=2;ctx.stroke();
-    // Маска
-    ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(0,-2,10,8,0,0,Math.PI*2);ctx.fill();
-    // Хвост
-    ctx.strokeStyle=c;ctx.lineWidth=4;ctx.lineCap='round';
-    ctx.beginPath();ctx.moveTo(14,8);ctx.bezierCurveTo(24,0,26,-10,18,-16);ctx.stroke();
 
   } else if(n==='Турбо'){
-    // Ракета-корпус
-    ctx.fillStyle=c2;ctx.beginPath();ctx.ellipse(0,6,20,14,0,0,Math.PI*2);ctx.fill();
-    // Реактивная струя
-    const flame=ctx.createLinearGradient(0,16,0,32);
-    flame.addColorStop(0,'#fbbf24');flame.addColorStop(0.5,'#f97316');flame.addColorStop(1,'transparent');
-    ctx.fillStyle=flame;ctx.globalAlpha=0.8+Math.sin(t*10)*0.2;
-    ctx.beginPath();ctx.ellipse(0,22,8+Math.sin(t*8)*2,10+Math.sin(t*6)*3,0,0,Math.PI*2);ctx.fill();
-    ctx.globalAlpha=1;
-    // Корпус робота
-    const rg=ctx.createLinearGradient(-18,-20,18,20);
+    ctx.fillStyle='#ef4444';
+    ctx.beginPath();ctx.moveTo(-12,18);ctx.lineTo(-18,28);ctx.lineTo(-12,24);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(12,18);ctx.lineTo(18,28);ctx.lineTo(12,24);ctx.closePath();ctx.fill();
+    const rg=ctx.createLinearGradient(-18,-22,18,20);
     rg.addColorStop(0,'#fed7aa');rg.addColorStop(1,c);
     ctx.fillStyle=rg;ctx.beginPath();ctx.roundRect(-16,-22,32,28,8);ctx.fill();
     ctx.strokeStyle='rgba(0,0,0,.4)';ctx.lineWidth=2;ctx.stroke();
-    // Иллюминатор
     ctx.fillStyle='#0ea5e9';ctx.beginPath();ctx.arc(0,-8,10,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='rgba(255,255,255,.4)';ctx.beginPath();ctx.arc(-3,-11,5,0,Math.PI*2);ctx.fill();
-    // Антенна
-    ctx.strokeStyle='#9ca3af';ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(0,-22);ctx.lineTo(0,-30);ctx.stroke();
+    ctx.strokeStyle='#9ca3af';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-22);ctx.lineTo(0,-30);ctx.stroke();
     ctx.fillStyle='#ef4444';ctx.beginPath();ctx.arc(0,-30,3,0,Math.PI*2);ctx.fill();
+    const flame=ctx.createLinearGradient(0,16,0,32);
+    flame.addColorStop(0,'#fbbf24');flame.addColorStop(1,'transparent');
+    ctx.fillStyle=flame;ctx.globalAlpha=0.8+Math.sin(t*10)*.2;
+    ctx.beginPath();ctx.ellipse(0,22,8,10+Math.sin(t*6)*3,0,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
   }
 
-  // Глаза у всех (кроме тех у кого своя морда)
-  if(!['Молния','Бочка','Фрост','Факел'].includes(n)){
-    // Глаза уже нарисованы выше для некоторых
+  // Глаза для всех базовых героев
+  if(['Факел','Фрост','Нова','Турбо'].includes(n)){
+    const ey=n==='Фрост'?-2:n==='Нова'?-2:n==='Турбо'?-8:-2;
+    if(n!=='Турбо'){
+      ctx.fillStyle='#fff';
+      ctx.beginPath();ctx.arc(-5,ey,4,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(5,ey,4,0,Math.PI*2);ctx.fill();
+      if(blink){
+        ctx.fillStyle=c2||'#1f2937';ctx.fillRect(-9,ey-1,8,2.5);ctx.fillRect(1,ey-1,8,2.5);
+      } else {
+        ctx.fillStyle='#1f2937';
+        ctx.beginPath();ctx.arc(-5,ey,2.2,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();ctx.arc(5,ey,2.2,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#fff';
+        ctx.beginPath();ctx.arc(-4,ey-1,1,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();ctx.arc(6,ey-1,1,0,Math.PI*2);ctx.fill();
+      }
+    }
   }
 
-  // Общие глаза для Факела, Бочки, Корня, Нова, Фрост
-  if(['Факел','Бочка','Корень'].includes(n)){
-    const eyeY = n==='Бочка'?-4:n==='Корень'?-4:-2;
+  // Глаза для русских героев
+  if(n==='Яга'){
+    const ey=-8;
+    const eyeColor = (b.age||0)>=2 ? '#92400e' : '#7c3aed';
     ctx.fillStyle='#fff';
-    ctx.beginPath();ctx.arc(-6,eyeY,4.5,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.arc(6,eyeY,4.5,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(-6,ey,4,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(6,ey,4,0,Math.PI*2);ctx.fill();
     if(blink){
-      ctx.fillStyle='rgba(0,0,0,.8)';
-      ctx.fillRect(-10,eyeY-1,8,2.5);
-      ctx.fillRect(2,eyeY-1,8,2.5);
+      ctx.fillStyle=eyeColor;ctx.fillRect(-10,ey-1,8,2.5);ctx.fillRect(2,ey-1,8,2.5);
     } else {
-      ctx.fillStyle='#1f2937';
-      ctx.beginPath();ctx.arc(-6,eyeY,2.5,0,Math.PI*2);ctx.fill();
-      ctx.beginPath();ctx.arc(6,eyeY,2.5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=eyeColor;
+      ctx.beginPath();ctx.arc(-6,ey,2.5,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(6,ey,2.5,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='#fff';
-      ctx.beginPath();ctx.arc(-5,eyeY-1,1,0,Math.PI*2);ctx.fill();
-      ctx.beginPath();ctx.arc(7,eyeY-1,1,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(-5,ey-1,1,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(7,ey-1,1,0,Math.PI*2);ctx.fill();
     }
   }
-  // Глаза для Нова (в центре звезды)
-  if(n==='Нова'){
+  if(n==='Леший'){
     ctx.fillStyle='#fff';
-    ctx.beginPath();ctx.arc(-5,-2,3.5,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.arc(5,-2,3.5,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(-6,-12,4,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(6,-12,4,0,Math.PI*2);ctx.fill();
     if(blink){
-      ctx.fillStyle='#9333ea';ctx.fillRect(-8.5,-3,7,2);ctx.fillRect(1.5,-3,7,2);
+      ctx.fillStyle='#16a34a';ctx.fillRect(-10,-13,8,2.5);ctx.fillRect(2,-13,8,2.5);
     } else {
-      ctx.fillStyle='#9333ea';ctx.beginPath();ctx.arc(-5,-2,2,0,Math.PI*2);ctx.fill();
-      ctx.beginPath();ctx.arc(5,-2,2,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(-4,-2.5,.8,0,Math.PI*2);ctx.fill();
-      ctx.beginPath();ctx.arc(6,-2.5,.8,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#14532d';
+      ctx.beginPath();ctx.arc(-6,-12,2.5,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(6,-12,2.5,0,Math.PI*2);ctx.fill();
     }
   }
-  // Глаза Фрост
-  if(n==='Фрост'){
-    ctx.fillStyle='#fff';
-    ctx.beginPath();ctx.arc(-5,-2,4,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.arc(5,-2,4,0,Math.PI*2);ctx.fill();
+  if(n==='Кащей'){
+    ctx.fillStyle='#e2e8f0';
+    ctx.beginPath();ctx.arc(-5,-14,3.5,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(5,-14,3.5,0,Math.PI*2);ctx.fill();
     if(blink){
-      ctx.fillStyle='#0ea5e9';ctx.fillRect(-9,-3,8,2.5);ctx.fillRect(1,-3,8,2.5);
+      ctx.fillStyle='#7c3aed';ctx.fillRect(-8.5,-15,7,2);ctx.fillRect(1.5,-15,7,2);
     } else {
-      ctx.fillStyle='#0369a1';ctx.beginPath();ctx.arc(-5,-2,2.2,0,Math.PI*2);ctx.fill();
-      ctx.beginPath();ctx.arc(5,-2,2.2,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(-4,-2.5,1,0,Math.PI*2);ctx.fill();
-      ctx.beginPath();ctx.arc(6,-2.5,1,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#7c3aed';
+      ctx.beginPath();ctx.arc(-5,-14,2,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(5,-14,2,0,Math.PI*2);ctx.fill();
     }
   }
-  // Глаза Мрак/Молния/Турбо — уже есть в их блоках, добавим общие
-  if(n==='Молния'||n==='Мрак'){
-    const ey=n==='Молния'?-4:-2;
-    ctx.fillStyle='#fff';
-    ctx.beginPath();ctx.arc(-5,ey,4,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.arc(5,ey,4,0,Math.PI*2);ctx.fill();
-    if(blink){
-      ctx.fillStyle=n==='Молния'?'#f59e0b':'#4f46e5';
-      ctx.fillRect(-9,ey-1,8,2.5);ctx.fillRect(1,ey-1,8,2.5);
-    } else {
-      ctx.fillStyle=n==='Молния'?'#92400e':'#312e81';
-      ctx.beginPath();ctx.arc(-5,ey,2.2,0,Math.PI*2);ctx.fill();
-      ctx.beginPath();ctx.arc(5,ey,2.2,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='#fff';
-      ctx.beginPath();ctx.arc(-4,ey-1,1,0,Math.PI*2);ctx.fill();
-      ctx.beginPath();ctx.arc(6,ey-1,1,0,Math.PI*2);ctx.fill();
-    }
+  if(n==='Соловей'){
+    // Очки уже нарисованы
   }
 
   ctx.restore();
 
-  // Оружие (поверх тела)
-  ctx.save();
-  ctx.translate(0, bob);
-  ctx.fillStyle='#374151';ctx.beginPath();ctx.roundRect(-4,12,8,14,3);ctx.fill();
-  ctx.fillStyle='#6b7280';ctx.beginPath();ctx.roundRect(-2.5,14,5,10,2);ctx.fill();
-  if(b.weapon==='sniper'){ctx.fillStyle='#1f2937';ctx.fillRect(-1.5,24,3,10);}
-  else if(b.weapon==='shotgun'){ctx.fillStyle='#1f2937';ctx.fillRect(-5,24,10,5);}
-  else if(b.weapon==='rocket'){
-    ctx.fillStyle='#ef4444';ctx.beginPath();ctx.arc(0,28,5,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#fbbf24';ctx.globalAlpha=0.7+Math.sin(t*8)*0.3;
-    ctx.beginPath();ctx.arc(0,32,3+Math.sin(t*10),0,Math.PI*2);ctx.fill();
+  // Оружие
+  ctx.save();ctx.translate(0,bob);
+  if(n==='Яга'){
+    // Метла
+    ctx.strokeStyle='#92400e';ctx.lineWidth=4;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(-3,10);ctx.lineTo(3,30);ctx.stroke();
+    ctx.fillStyle='#d97706';
+    for(let i=-2;i<=2;i++){
+      ctx.beginPath();ctx.moveTo(3,28);ctx.lineTo(3+i*4,38);ctx.lineWidth=2;ctx.strokeStyle='#d97706';ctx.stroke();
+    }
+    // Фиолетовое зелье капает
+    ctx.fillStyle='#a855f7';ctx.globalAlpha=.7;
+    ctx.beginPath();ctx.arc(3+Math.sin(t*4)*3,35+Math.sin(t*3)*3,3,0,Math.PI*2);ctx.fill();
     ctx.globalAlpha=1;
-  }
-  else if(b.weapon==='laser'){
-    ctx.fillStyle='#e879f9';ctx.fillRect(-1.5,24,3,8);
-    ctx.fillStyle='#f0abfc';ctx.globalAlpha=0.5+Math.sin(t*6)*0.3;
-    ctx.fillRect(-2,30,4,3);ctx.globalAlpha=1;
-  }
-  else if(b.weapon==='bomb'){
-    ctx.fillStyle='#7c3aed';ctx.beginPath();ctx.arc(0,28,6,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle='#fbbf24';ctx.lineWidth=1.5;
-    ctx.beginPath();ctx.moveTo(4,24);ctx.lineTo(8,18);ctx.stroke();
+  } else if(n==='Леший'){
+    // Двустволка
+    ctx.fillStyle='#4b5563';ctx.beginPath();ctx.roundRect(-5,10,10,18,2);ctx.fill();
+    ctx.fillStyle='#1f2937';ctx.fillRect(-4,26,4,6);ctx.fillRect(1,26,4,6);
+    ctx.fillStyle='#6b7280';ctx.fillRect(-3,12,6,12);
+  } else if(n==='Кащей'){
+    // Световой меч (уже нарисован в теле)
+  } else if(n==='Соловей'){
+    // Гитара (уже нарисована)
+  } else {
+    ctx.fillStyle='#374151';ctx.beginPath();ctx.roundRect(-4,12,8,14,3);ctx.fill();
+    ctx.fillStyle='#6b7280';ctx.beginPath();ctx.roundRect(-2.5,14,5,10,2);ctx.fill();
+    if(b.weapon==='sniper'){ctx.fillStyle='#1f2937';ctx.fillRect(-1.5,24,3,10);}
+    else if(b.weapon==='shotgun'){ctx.fillStyle='#1f2937';ctx.fillRect(-5,24,10,5);}
+    else if(b.weapon==='rocket'){
+      ctx.fillStyle='#ef4444';ctx.beginPath();ctx.arc(0,28,5,0,Math.PI*2);ctx.fill();
+    } else if(b.weapon==='laser'){
+      ctx.fillStyle='#e879f9';ctx.fillRect(-1.5,24,3,8);
+    }
   }
   ctx.restore();
 }
