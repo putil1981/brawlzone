@@ -1,5 +1,71 @@
 <!DOCTYPE html>
-<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>BRAWL ZONE</title><link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#1a0a2e;overflow:hidden;font-family:'Nunito',sans-serif;touch-action:none}#mainMenu{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 30%,#3d1a6e 0%,#1a0a2e 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}.logo{font-family:'Fredoka One',cursive;font-size:clamp(48px,10vw,96px);color:#fff;text-shadow:0 0 30px #ff6b35,0 4px 0 #c2410c,0 8px 0 #7c2d12;letter-spacing:4px;animation:lp 2s ease-in-out infinite}@keyframes lp{0%,100%{transform:scale(1) rotate(-1deg)}50%{transform:scale(1.05) rotate(1deg)}}.subtitle{color:#fbbf24;font-size:20px;font-weight:900;letter-spacing:2px;margin-top:-16px}.menuModes{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:700px}.modeCard{background:linear-gradient(135deg,#2d1b69,#1e1040);border:3px solid rgba(255,255,255,.15);border-radius:20px;padding:20px 28px;cursor:pointer;transition:all .2s;text-align:center;min-width:160px}.modeCard:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.4)}.modeIcon{font-size:36px;margin-bottom:8px}.modeName{color:#fff;font-size:16px;font-weight:900}.modeDesc{color:#a78bfa;font-size:12px;margin-top:4px}.startBtn{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;border:none;border-radius:50px;padding:18px 56px;font-size:22px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;box-shadow:0 8px 32px rgba(249,115,22,.5);text-transform:uppercase}.selectedMode{border-color:#f97316!important;box-shadow:0 0 20px rgba(249,115,22,.4)}#gameCanvas{display:block}#hud{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}.hudTop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:12px 16px}.hudBox{background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:8px 16px;backdrop-filter:blur(8px)}.hudTimer{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);border:2px solid #fbbf24;border-radius:50px;padding:6px 20px;color:#fbbf24;font-size:24px;font-weight:900;font-family:'Fredoka One',cursive}.hudScore{color:#fff;font-size:14px;font-weight:900}.hudScore span{color:#fbbf24;font-size:20px}.hudMode{color:#a78bfa;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px}#joystickLeft{position:fixed;bottom:30px;left:30px;pointer-events:all;z-index:20;display:none}.joyOuter{width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08);border:3px solid rgba(255,255,255,.2);position:relative}.joyInner{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.4);border:3px solid rgba(255,255,255,.7);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}#playerHP{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px}.hpBar{width:200px;height:14px;background:rgba(0,0,0,.5);border-radius:20px;border:2px solid rgba(255,255,255,.2);overflow:hidden}.hpFill{height:100%;background:linear-gradient(90deg,#22c55e,#86efac);border-radius:20px;transition:width .2s}.superBar{width:200px;height:8px;background:rgba(0,0,0,.5);border-radius:20px;overflow:hidden}.superFill{height:100%;background:linear-gradient(90deg,#eab308,#fde047);border-radius:20px;transition:width .3s}.crystalCount{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;color:#a855f7;font-size:18px;font-weight:900;background:rgba(0,0,0,.6);padding:6px 16px;border-radius:50px;border:2px solid #a855f7}#gameOver{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;backdrop-filter:blur(8px)}.goTitle{font-family:'Fredoka One',cursive;font-size:clamp(48px,10vw,80px)}.goStats{color:#e2e8f0;font-size:18px;text-align:center;line-height:1.8}.goStats b{color:#fbbf24}.replayBtn{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:50px;padding:16px 48px;font-size:20px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;margin-top:8px}.menuBtn{background:transparent;color:#a78bfa;border:2px solid #a78bfa;border-radius:50px;padding:12px 40px;font-size:16px;font-weight:700;cursor:pointer}#killFeed{position:fixed;top:80px;right:12px;z-index:15;pointer-events:none;display:flex;flex-direction:column;gap:4px;max-width:200px}.killMsg{background:rgba(0,0,0,.7);border-radius:8px;padding:4px 10px;font-size:12px;color:#fff;font-weight:700;border-left:3px solid #f97316}.particle{position:fixed;pointer-events:none;z-index:50;border-radius:50%;animation:pf .6s forwards}@keyframes pf{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}.floatText{position:fixed;pointer-events:none;z-index:60;font-weight:900;font-size:20px;animation:fu 1s forwards}@keyframes fu{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>BRAWL ZONE</title><link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#1a0a2e;overflow:hidden;font-family:'Nunito',sans-serif;touch-action:none}
+/* ===== ЖИВОЕ МЕНЮ ===== */
+#menuCanvas{position:fixed;inset:0;z-index:99;pointer-events:none;}
+#mainMenu{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:clamp(10px,4vh,40px);gap:clamp(8px,2vh,18px);overflow:hidden;}
+
+/* Логотип с хохломой */
+.logoWrap{position:relative;text-align:center;}
+.logoOrn{color:#d97706;font-size:clamp(14px,3vw,20px);letter-spacing:8px;opacity:.8;animation:ornPulse 3s ease-in-out infinite;}
+@keyframes ornPulse{0%,100%{opacity:.6;transform:scaleX(1)}50%{opacity:1;transform:scaleX(1.05)}}
+.logo{font-family:'Fredoka One',cursive;font-size:clamp(52px,12vw,100px);color:#fff;letter-spacing:5px;line-height:1;
+  text-shadow:0 0 40px #ff6b35,0 0 80px #ff6b3566,0 5px 0 #c2410c,0 10px 0 #7c2d12,0 15px 30px rgba(0,0,0,.5);
+  animation:logoBounce 2s ease-in-out infinite;}
+@keyframes logoBounce{0%,100%{transform:scale(1) rotate(-.5deg);text-shadow:0 0 40px #ff6b35,0 0 80px #ff6b3566,0 5px 0 #c2410c,0 10px 0 #7c2d12;}
+  50%{transform:scale(1.04) rotate(.5deg);text-shadow:0 0 60px #ff6b35,0 0 120px #ff6b3588,0 5px 0 #c2410c,0 10px 0 #7c2d12;}}
+.subtitle{color:#fbbf24;font-size:clamp(13px,3vw,18px);font-weight:900;letter-spacing:3px;margin-top:-4px;
+  text-shadow:0 2px 10px rgba(0,0,0,.6);animation:subGlow 2s ease-in-out infinite alternate;}
+@keyframes subGlow{from{color:#fbbf24;text-shadow:0 0 8px #f59e0b88;}to{color:#fde68a;text-shadow:0 0 20px #f59e0b;}}
+
+/* Режимы — горизонтальный скролл */
+.menuModes{display:flex;gap:12px;padding:4px 20px;overflow-x:auto;max-width:100%;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+.menuModes::-webkit-scrollbar{display:none;}
+.modeCard{flex:0 0 auto;width:clamp(140px,38vw,200px);
+  background:linear-gradient(135deg,rgba(45,27,105,.95),rgba(30,16,64,.95));
+  border:2px solid rgba(255,255,255,.12);border-radius:22px;
+  padding:clamp(14px,3vw,22px) clamp(12px,3vw,20px);
+  cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  text-align:center;scroll-snap-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  position:relative;overflow:hidden;}
+.modeCard::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.08),transparent 60%);
+  opacity:0;transition:opacity .2s;}
+.modeCard:hover::before,.modeCard:active::before{opacity:1;}
+.modeCard:hover{transform:translateY(-6px) scale(1.05);border-color:rgba(255,255,255,.35);
+  box-shadow:0 16px 48px rgba(0,0,0,.5);}
+.modeCard:active{transform:scale(.96);}
+.modeIcon{font-size:clamp(32px,8vw,48px);margin-bottom:6px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));}
+.modeName{color:#fff;font-size:clamp(13px,3.5vw,17px);font-weight:900;letter-spacing:1px;}
+.modeDesc{color:#a78bfa;font-size:clamp(10px,2.5vw,12px);margin-top:3px;}
+.selectedMode{border-color:#f97316!important;
+  box-shadow:0 0 0 1px #f97316,0 0 30px rgba(249,115,22,.5),0 8px 32px rgba(0,0,0,.4)!important;}
+.selectedMode .modeName{color:#fbbf24;}
+
+/* Кнопка ИГРАТЬ — главная фишка */
+.startBtnWrap{position:relative;margin-top:4px;}
+.startBtnGlow{position:absolute;inset:-12px;border-radius:60px;
+  background:radial-gradient(ellipse,rgba(249,115,22,.5),transparent 70%);
+  animation:btnGlow 1.5s ease-in-out infinite alternate;filter:blur(8px);}
+@keyframes btnGlow{from{opacity:.6;transform:scale(.95)}to{opacity:1;transform:scale(1.05)}}
+.startBtn{position:relative;
+  background:linear-gradient(135deg,#ff8c00,#f97316,#dc2626);
+  background-size:200% 200%;
+  color:#fff;border:none;border-radius:50px;
+  padding:clamp(14px,3vh,20px) clamp(40px,10vw,64px);
+  font-size:clamp(20px,5vw,26px);font-weight:900;
+  font-family:'Fredoka One',cursive;letter-spacing:3px;
+  cursor:pointer;
+  box-shadow:0 8px 0 #92400e,0 12px 32px rgba(249,115,22,.6);
+  transition:all .12s;text-transform:uppercase;
+  animation:btnPulse 1.8s ease-in-out infinite;}
+@keyframes btnPulse{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.startBtn:hover{transform:translateY(-3px);box-shadow:0 11px 0 #92400e,0 16px 40px rgba(249,115,22,.7);}
+.startBtn:active{transform:translateY(4px);box-shadow:0 4px 0 #92400e,0 6px 20px rgba(249,115,22,.5);}
+
+/* Хинт */
+.menuHint{color:rgba(255,255,255,.35);font-size:11px;letter-spacing:1px;}
+#gameCanvas{display:block}#hud{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}.hudTop{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;padding:12px 16px}.hudBox{background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:8px 16px;backdrop-filter:blur(8px)}.hudTimer{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);border:2px solid #fbbf24;border-radius:50px;padding:6px 20px;color:#fbbf24;font-size:24px;font-weight:900;font-family:'Fredoka One',cursive}.hudScore{color:#fff;font-size:14px;font-weight:900}.hudScore span{color:#fbbf24;font-size:20px}.hudMode{color:#a78bfa;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px}#joystickLeft{position:fixed;bottom:30px;left:30px;pointer-events:all;z-index:20;display:none}.joyOuter{width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08);border:3px solid rgba(255,255,255,.2);position:relative}.joyInner{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.4);border:3px solid rgba(255,255,255,.7);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}#playerHP{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px}.hpBar{width:200px;height:14px;background:rgba(0,0,0,.5);border-radius:20px;border:2px solid rgba(255,255,255,.2);overflow:hidden}.hpFill{height:100%;background:linear-gradient(90deg,#22c55e,#86efac);border-radius:20px;transition:width .2s}.superBar{width:200px;height:8px;background:rgba(0,0,0,.5);border-radius:20px;overflow:hidden}.superFill{height:100%;background:linear-gradient(90deg,#eab308,#fde047);border-radius:20px;transition:width .3s}.crystalCount{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;color:#a855f7;font-size:18px;font-weight:900;background:rgba(0,0,0,.6);padding:6px 16px;border-radius:50px;border:2px solid #a855f7}#gameOver{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;backdrop-filter:blur(8px)}.goTitle{font-family:'Fredoka One',cursive;font-size:clamp(48px,10vw,80px)}.goStats{color:#e2e8f0;font-size:18px;text-align:center;line-height:1.8}.goStats b{color:#fbbf24}.replayBtn{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:50px;padding:16px 48px;font-size:20px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;margin-top:8px}.menuBtn{background:transparent;color:#a78bfa;border:2px solid #a78bfa;border-radius:50px;padding:12px 40px;font-size:16px;font-weight:700;cursor:pointer}#killFeed{position:fixed;top:80px;right:12px;z-index:15;pointer-events:none;display:flex;flex-direction:column;gap:4px;max-width:200px}.killMsg{background:rgba(0,0,0,.7);border-radius:8px;padding:4px 10px;font-size:12px;color:#fff;font-weight:700;border-left:3px solid #f97316}.particle{position:fixed;pointer-events:none;z-index:50;border-radius:50%;animation:pf .6s forwards}@keyframes pf{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}.floatText{position:fixed;pointer-events:none;z-index:60;font-weight:900;font-size:20px;animation:fu 1s forwards}@keyframes fu{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
 #brawlerSelect{position:fixed;inset:0;z-index:150;background:radial-gradient(ellipse at 50% 30%,#3d1a6e 0%,#1a0a2e 70%);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;gap:16px;overflow-y:auto;}
 .bsTitle{font-family:'Fredoka One',cursive;font-size:clamp(28px,6vw,52px);color:#fff;text-shadow:0 0 20px #f97316;letter-spacing:3px;margin-top:10px;}
 .bsSubtitle{color:#a78bfa;font-size:14px;font-weight:700;margin-top:-10px;}
@@ -19,7 +85,39 @@
 .bsBack{background:transparent;color:#a78bfa;border:2px solid #a78bfa;border-radius:50px;padding:10px 32px;font-size:14px;font-weight:700;cursor:pointer;}
 .weaponIcons{shotgun:'💥',sniper:'🎯',bomb:'💣',pistol:'🔫',laser:'⚡',rocket:'🚀'}
 </style></head><body>
-<div id="mainMenu"><div class="logo">BRAWL ZONE</div><div class="subtitle">⚡ РОССИЙСКИЙ АНАЛОГ ⚡</div><div class="menuModes"><div class="modeCard selectedMode" onclick="selectMode('showdown')" id="mode_showdown"><div class="modeIcon">💀</div><div class="modeName">SHOWDOWN</div><div class="modeDesc">Один против всех</div></div><div class="modeCard" onclick="selectMode('brawl3v3')" id="mode_brawl3v3"><div class="modeIcon">⚔️</div><div class="modeName">3 vs 3</div><div class="modeDesc">Командный бой</div></div><div class="modeCard" onclick="selectMode('crystals')" id="mode_crystals"><div class="modeIcon">💎</div><div class="modeName">КРИСТАЛЛЫ</div><div class="modeDesc">Захват ресурсов</div></div></div><button class="startBtn" onclick="showBrawlerSelect()">🔥 ИГРАТЬ!</button></div>
+
+<canvas id="menuCanvas"></canvas>
+<div id="mainMenu">
+  <div class="logoWrap">
+    <div class="logoOrn">✦ ✦ ✦ ✦ ✦</div>
+    <div class="logo">BRAWL ZONE</div>
+    <div class="subtitle">⚡ РОССИЙСКИЙ АНАЛОГ ⚡</div>
+  </div>
+
+  <div class="menuModes">
+    <div class="modeCard selectedMode" onclick="selectMode('showdown')" id="mode_showdown">
+      <div class="modeIcon">💀</div>
+      <div class="modeName">SHOWDOWN</div>
+      <div class="modeDesc">Один против всех</div>
+    </div>
+    <div class="modeCard" onclick="selectMode('brawl3v3')" id="mode_brawl3v3">
+      <div class="modeIcon">⚔️</div>
+      <div class="modeName">3 vs 3</div>
+      <div class="modeDesc">Командный бой</div>
+    </div>
+    <div class="modeCard" onclick="selectMode('crystals')" id="mode_crystals">
+      <div class="modeIcon">💎</div>
+      <div class="modeName">КРИСТАЛЛЫ</div>
+      <div class="modeDesc">Захват ресурсов</div>
+    </div>
+  </div>
+
+  <div class="startBtnWrap">
+    <div class="startBtnGlow"></div>
+    <button class="startBtn" onclick="showBrawlerSelect()">🔥 ИГРАТЬ!</button>
+  </div>
+  <div class="menuHint">ПК: WASD + мышь &nbsp;|&nbsp; Мобайл: джойстик</div>
+</div>
 
 <div id="brawlerSelect">
   <div class="bsTitle">ВЫБЕРИ БРАВЛЕРА</div>
@@ -504,4 +602,123 @@ function setupJoy(){const jL=document.getElementById('joystickLeft'),jLI=documen
 function setupFire(){const fb=document.getElementById('fireBtn'),sb=document.getElementById('superBtn');fb.addEventListener('touchstart',e=>{e.preventDefault();if(!gameRunning||!player||!player.alive)return;shoot(player,player.x+Math.cos(player.angle)*300,player.y+Math.sin(player.angle)*300);fb.style.transform='scale(.92)';},{passive:false});fb.addEventListener('touchend',e=>{e.preventDefault();fb.style.transform='scale(1)';},{passive:false});sb.addEventListener('touchstart',e=>{e.preventDefault();if(!gameRunning||!player||!player.alive||player.superCharge<100)return;player.superCharge=0;shoot(player,player.x+Math.cos(player.angle)*500,player.y+Math.sin(player.angle)*500,true);},{passive:false});setInterval(()=>{if(player)sb.style.opacity=player.superCharge>=100?'1':'.35';},200);}
 function resize(){W=window.innerWidth;H=window.innerHeight;canvas.width=W;canvas.height=H;isMobile='ontouchstart' in window||W<900;}
 resize();window.addEventListener('resize',resize);setupJoy();setupFire();
+// ===== ЖИВОЙ ФОН МЕНЮ =====
+const menuCanvas = document.getElementById('menuCanvas');
+const mctx = menuCanvas.getContext('2d');
+let menuParticles = [];
+let menuHeroes = [];
+let menuAnimFrame;
+
+function initMenuBG(){
+  menuCanvas.width = window.innerWidth;
+  menuCanvas.height = window.innerHeight;
+
+  // Частицы
+  menuParticles = [];
+  for(let i=0;i<60;i++){
+    menuParticles.push({
+      x: Math.random()*menuCanvas.width,
+      y: Math.random()*menuCanvas.height,
+      r: 1+Math.random()*3,
+      vx: (Math.random()-.5)*0.4,
+      vy: -.3-Math.random()*.6,
+      color: ['#f97316','#fbbf24','#a78bfa','#06b6d4','#e879f9'][Math.floor(Math.random()*5)],
+      alpha: Math.random(),
+      life: Math.random(),
+    });
+  }
+
+  // Мини-герои на фоне
+  menuHeroes = BR.map((b,i)=>({
+    x: Math.random()*menuCanvas.width,
+    y: menuCanvas.height*0.6 + Math.random()*menuCanvas.height*0.35,
+    angle: Math.random()*Math.PI*2,
+    speed: .4+Math.random()*.6,
+    brawler: b,
+    scale: .45+Math.random()*.2,
+    t: Math.random()*10,
+  }));
+}
+
+function drawMenuBG(ts){
+  menuAnimFrame = requestAnimationFrame(drawMenuBG);
+  if(document.getElementById('mainMenu').style.display==='none'){return;}
+
+  const t = ts/1000;
+  menuCanvas.width = window.innerWidth;
+  menuCanvas.height = window.innerHeight;
+  const W=menuCanvas.width, H=menuCanvas.height;
+
+  // Фон — глубокий градиент
+  const bg = mctx.createRadialGradient(W*.5,H*.3,0,W*.5,H*.5,H);
+  bg.addColorStop(0,'#3d1a6e');
+  bg.addColorStop(0.4,'#1e0a4e');
+  bg.addColorStop(1,'#0a0520');
+  mctx.fillStyle=bg;
+  mctx.fillRect(0,0,W,H);
+
+  // Звёзды
+  mctx.fillStyle='rgba(255,255,255,.6)';
+  for(let i=0;i<80;i++){
+    const sx=(Math.sin(i*127.1)*0.5+0.5)*W;
+    const sy=(Math.sin(i*311.7)*0.5+0.5)*H;
+    const sr=.5+Math.sin(t*2+i)*.3;
+    mctx.globalAlpha=.3+Math.sin(t*1.5+i*.7)*.3;
+    mctx.beginPath();mctx.arc(sx,sy,sr,0,Math.PI*2);mctx.fill();
+  }
+  mctx.globalAlpha=1;
+
+  // Хохломные узоры — золотые линии по краям
+  mctx.strokeStyle='rgba(217,119,6,.15)';
+  mctx.lineWidth=1.5;
+  for(let i=0;i<6;i++){
+    mctx.beginPath();
+    mctx.arc(W*.1+i*W*.15, H*.05, 30+i*10, 0, Math.PI*2);
+    mctx.stroke();
+  }
+
+  // Нижние герои
+  for(const h of menuHeroes){
+    h.t += .016;
+    h.x += Math.cos(h.angle)*h.speed;
+    h.y += Math.sin(h.angle)*.15;
+    if(h.x<-60) h.x=W+60;
+    if(h.x>W+60) h.x=-60;
+    if(h.y>H+40) h.y=H*.6;
+    if(h.y<H*.55) h.y=H*.7;
+
+    mctx.save();
+    mctx.translate(h.x,h.y);
+    mctx.scale(h.scale,h.scale);
+    mctx.rotate(h.angle+Math.PI/2);
+    mctx.globalAlpha=0.35;
+    drawHero(mctx, h.brawler, h.t);
+    mctx.restore();
+  }
+
+  // Частицы
+  for(const p of menuParticles){
+    p.x+=p.vx; p.y+=p.vy; p.life+=.008;
+    if(p.y<-10||p.life>1){ p.y=H+5; p.x=Math.random()*W; p.life=0; }
+    mctx.globalAlpha=Math.sin(p.life*Math.PI)*0.7;
+    mctx.fillStyle=p.color;
+    mctx.beginPath();mctx.arc(p.x,p.y,p.r,0,Math.PI*2);mctx.fill();
+  }
+
+  // Мерцающие вспышки
+  if(Math.random()<.02){
+    const fx=Math.random()*W, fy=Math.random()*H*.5;
+    const fg=mctx.createRadialGradient(fx,fy,0,fx,fy,40+Math.random()*40);
+    fg.addColorStop(0,'rgba(249,115,22,.3)');
+    fg.addColorStop(1,'transparent');
+    mctx.fillStyle=fg;
+    mctx.beginPath();mctx.arc(fx,fy,80,0,Math.PI*2);mctx.fill();
+  }
+
+  mctx.globalAlpha=1;
+}
+
+initMenuBG();
+requestAnimationFrame(drawMenuBG);
+
 </script></body></html>
