@@ -84,7 +84,7 @@ body{background:#0a0520;overflow:hidden;font-family:'Nunito',sans-serif;touch-ac
 .superBar{width:200px;height:8px;background:rgba(0,0,0,.5);border-radius:20px;border:2px solid rgba(250,204,21,.4);overflow:hidden;}
 .superFill{height:100%;background:linear-gradient(90deg,#eab308,#fde047);border-radius:20px;transition:width .3s;box-shadow:0 0 6px rgba(234,179,8,.7);}
 .crystalCount{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;display:none;pointer-events:none;color:#a855f7;font-size:18px;font-weight:900;background:rgba(0,0,0,.6);padding:6px 16px;border-radius:50px;border:2px solid #a855f7;}
-#gameOver{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;backdrop-filter:blur(8px);}
+#gameOver{position:fixed;inset:0;z-index:200;background:radial-gradient(ellipse at 50% 40%,rgba(60,0,80,.97),rgba(5,0,20,.98));display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;backdrop-filter:blur(12px);}
 .goTitle{font-family:'Fredoka One',cursive;font-size:clamp(48px,10vw,80px);text-shadow:0 4px 20px rgba(0,0,0,.5);}
 .goStats{color:#e2e8f0;font-size:18px;text-align:center;line-height:1.8;}.goStats b{color:#fbbf24;}
 .replayBtn{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;border-radius:50px;padding:16px 48px;font-size:20px;font-weight:900;font-family:'Fredoka One',cursive;cursor:pointer;box-shadow:0 6px 24px rgba(124,58,237,.5);transition:all .15s;margin-top:8px;}
@@ -116,7 +116,6 @@ body{background:#0a0520;overflow:hidden;font-family:'Nunito',sans-serif;touch-ac
 .bsBack{background:transparent;color:#a78bfa;border:2px solid #a78bfa;border-radius:50px;padding:10px 32px;font-size:14px;font-weight:700;cursor:pointer;}
 </style></head><body>
 
-<canvas id="menuCanvas"></canvas>
 <div id="mainMenu">
   <div class="logoWrap">
     <div class="logoOrn">✦ ✦ ✦ ✦ ✦</div>
@@ -157,6 +156,7 @@ body{background:#0a0520;overflow:hidden;font-family:'Nunito',sans-serif;touch-ac
   <button class="bsBack" onclick="backToMenu()">← НАЗАД</button>
 </div>
 
+<canvas id="menuCanvas" style="position:fixed;inset:0;z-index:98;pointer-events:none;display:block;"></canvas>
 <canvas id="gameCanvas"></canvas>
 <div id="hud"><div class="hudTop"><div class="hudBox"><div class="hudMode" id="hudModeName">SHOWDOWN</div><div class="hudScore">Счёт: <span id="hudScore">0</span></div></div><div class="hudTimer" id="hudTimer">3:00</div><div class="hudBox"><div class="hudScore">Живых: <span id="hudAlive">10</span></div><div class="hudScore" style="color:#f97316">Убийств: <span id="hudKills">0</span></div></div></div></div>
 <div id="playerHP"><div style="display:flex;gap:8px;align-items:center"><div class="hpBar"><div class="hpFill" id="hpFill"></div></div><span style="color:#22c55e;font-size:12px;font-weight:900" id="hpText">4/4</span></div><div style="display:flex;gap:8px;align-items:center"><div class="superBar"><div class="superFill" id="superFill"></div></div><span style="color:#eab308;font-size:10px;font-weight:700">СУПЕР</span></div></div>
@@ -624,7 +624,12 @@ function startTimer(){clearInterval(timerInterval);gameTime=currentMode==='showd
 function endGame(win){gameRunning=false;clearInterval(timerInterval);cancelAnimationFrame(animFrame);const go=document.getElementById('gameOver'),ti=document.getElementById('goTitle'),st=document.getElementById('goStats');ti.textContent=win?'🏆 ПОБЕДА!':'💀 ПОРАЖЕНИЕ';ti.style.color=win?'#fbbf24':'#ef4444';st.innerHTML='Убийств: <b>'+kills+'</b><br>Очков: <b>'+score+'</b>'+(currentMode==='crystals'?'<br>Кристаллов: <b>'+crystals+'</b>':'');go.style.display='flex';hideUI();}
 function selectMode(m){currentMode=m;document.querySelectorAll('.modeCard').forEach(c=>c.classList.remove('selectedMode'));document.getElementById('mode_'+m).classList.add('selectedMode');}
 function startGame(){document.getElementById('gameOver').style.display='none';document.getElementById('mainMenu').style.display='none';kills=0;score=0;crystals=0;genMap();player=mkPlayer();bots=[];if(currentMode==='showdown'){for(let i=0;i<9;i++)bots.push(mkBot(i,1));document.getElementById('hudModeName').textContent='💀 SHOWDOWN';}else if(currentMode==='brawl3v3'){for(let i=0;i<2;i++)bots.push(mkBot(i,0));for(let i=2;i<5;i++)bots.push(mkBot(i,1));player.team=0;document.getElementById('hudModeName').textContent='⚔️ 3 VS 3';}else{for(let i=0;i<6;i++)bots.push(mkBot(i,1));document.getElementById('hudModeName').textContent='💎 КРИСТАЛЛЫ';document.getElementById('crystalCount').style.display='flex';}showUI();startTimer();gameRunning=true;lastT=performance.now();animFrame=requestAnimationFrame(loop);}
-function showMenu(){document.getElementById('gameOver').style.display='none';document.getElementById('mainMenu').style.display='flex';hideUI();gameRunning=false;clearInterval(timerInterval);}
+function showMenu(){
+  // Перезапускаем фон меню
+  if(!menuAnimFrame || menuAnimFrame===0){
+    initMenuBG();
+    requestAnimationFrame(drawMenuBG);
+  }document.getElementById('gameOver').style.display='none';document.getElementById('mainMenu').style.display='flex';hideUI();gameRunning=false;clearInterval(timerInterval);}
 function showUI(){document.getElementById('hud').style.display='block';document.getElementById('playerHP').style.display='flex';if(isMobile){document.getElementById('joystickLeft').style.display='block';document.getElementById('fireBtn').style.display='flex';document.getElementById('superBtn').style.display='flex';}}
 function hideUI(){document.getElementById('hud').style.display='none';document.getElementById('playerHP').style.display='none';document.getElementById('joystickLeft').style.display='none';document.getElementById('fireBtn').style.display='none';document.getElementById('superBtn').style.display='none';document.getElementById('crystalCount').style.display='none';}
 window.addEventListener('keydown',e=>{keys[e.code]=true;});
@@ -754,8 +759,10 @@ function initMenuBG(){
 }
 
 function drawMenuBG(ts){
+  if(document.getElementById('mainMenu').style.display==='none'){
+    cancelAnimationFrame(menuAnimFrame);return;
+  }
   menuAnimFrame = requestAnimationFrame(drawMenuBG);
-  if(document.getElementById('mainMenu').style.display==='none'){return;}
 
   const t = ts/1000;
   menuCanvas.width = window.innerWidth;
@@ -781,14 +788,25 @@ function drawMenuBG(ts){
   }
   mctx.globalAlpha=1;
 
-  // Хохломные узоры — золотые линии по краям
-  mctx.strokeStyle='rgba(217,119,6,.15)';
-  mctx.lineWidth=1.5;
-  for(let i=0;i<6;i++){
+  // Хохломные узоры — декоративные линии
+  mctx.save();
+  mctx.strokeStyle='rgba(217,119,6,.2)';
+  mctx.lineWidth=1;
+  // Верхний орнамент
+  for(let i=0;i<W;i+=40){
     mctx.beginPath();
-    mctx.arc(W*.1+i*W*.15, H*.05, 30+i*10, 0, Math.PI*2);
+    mctx.moveTo(i, 0);
+    mctx.bezierCurveTo(i+10,10, i+20,5, i+30,15);
     mctx.stroke();
   }
+  // Нижний орнамент
+  for(let i=0;i<W;i+=40){
+    mctx.beginPath();
+    mctx.moveTo(i, H);
+    mctx.bezierCurveTo(i+10,H-10, i+20,H-5, i+30,H-15);
+    mctx.stroke();
+  }
+  mctx.restore();
 
   // Нижние герои
   for(const h of menuHeroes){
