@@ -208,6 +208,8 @@ function drawHero(ctx, b, t){
   const blink=Math.sin(t*3)>0.97;
   const bob=Math.sin(t*4)*1.5;
   ctx.save();
+  ctx.globalAlpha=1;
+  ctx.shadowBlur=0;
   ctx.translate(0,bob);
 
   if(n==='Яга'){
@@ -271,6 +273,7 @@ function drawHero(ctx, b, t){
     // Леший — качок в камуфляже
     const rage = b.rage||0;
     const bodyScale = 1+rage*.2;
+    ctx.save();
     ctx.scale(bodyScale,bodyScale);
     // Камуфляжный комбез
     const camo=['#4ade80','#16a34a','#14532d','#365314'];
@@ -312,6 +315,7 @@ function drawHero(ctx, b, t){
       }
     }
 
+    ctx.restore(); // конец scale Лешего
   } else if(n==='Кащей'){
     // Кащей — худощавый ловелас в Бриони
     // Костюм
@@ -543,6 +547,7 @@ function drawHero(ctx, b, t){
     ctx.fillStyle='#4b5563';ctx.beginPath();ctx.roundRect(-5,10,10,18,2);ctx.fill();
     ctx.fillStyle='#1f2937';ctx.fillRect(-4,26,4,6);ctx.fillRect(1,26,4,6);
     ctx.fillStyle='#6b7280';ctx.fillRect(-3,12,6,12);
+    ctx.restore(); // конец scale Лешего
   } else if(n==='Кащей'){
     // Световой меч (уже нарисован в теле)
   } else if(n==='Соловей'){
@@ -819,11 +824,12 @@ function drawMenuBG(ts){
     if(h.y<H*.55) h.y=H*.7;
 
     mctx.save();
+    mctx.globalAlpha=0.35;
     mctx.translate(h.x,h.y);
     mctx.scale(h.scale,h.scale);
     mctx.rotate(h.angle+Math.PI/2);
-    mctx.globalAlpha=0.35;
     drawHero(mctx, h.brawler, h.t);
+    mctx.globalAlpha=1;
     mctx.restore();
   }
 
